@@ -13,7 +13,7 @@ import jakarta.validation.constraints.Size;
 public class Object 
 {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
 	@Size(max = 20)

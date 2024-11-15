@@ -20,7 +20,7 @@ public class UserLost extends User
 	@Column
 	private String imageid;
 	
-	@OneToMany
+	@OneToMany(mappedBy = "userlost")
 	private List<Object> lost_object;
 
 	public UserLost() {}

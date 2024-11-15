@@ -15,7 +15,7 @@ import jakarta.validation.constraints.NotBlank;
 public class Credentials 
 {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long credentialsId;
 	    
 	@Column(nullable = false, unique = true)
