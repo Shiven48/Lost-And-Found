@@ -16,7 +16,6 @@ public class UserFoundService {
 
 	@Autowired
 	private UserFoundRepository userFoundRepository;
-	
 	@Autowired
 	private CredentialService credentialService;
 

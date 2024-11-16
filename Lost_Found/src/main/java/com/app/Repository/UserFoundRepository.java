@@ -5,7 +5,6 @@ import org.springframework.stereotype.Repository;
 
 import com.app.Entity.UserFound;
 
-// Credentials Repository
 @Repository
 public interface UserFoundRepository extends JpaRepository<UserFound, Long> {
 

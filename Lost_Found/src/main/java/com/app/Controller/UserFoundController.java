@@ -22,8 +22,11 @@ import com.app.Service.UserFoundService;
 @RestController
 public class UserFoundController {
 
-	@Autowired
 	private UserFoundService userService;
+	
+	public UserFoundController(UserFoundService userService) {
+		this.userService = userService;
+	}
 	
 	@GetMapping(path = "users/userfound",name = "foundUserAll")
 	public ResponseEntity<List<UserFound>> fetchAll() {
