@@ -4,15 +4,22 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.app.Entity.Credentials;
 import com.app.Entity.UserFound;
 import com.app.Repository.UserFoundRepository;
 
 @Service
 public class UserFoundService {
 
+	@Autowired
 	private UserFoundRepository userFoundRepository;
+	
+	@Autowired
+	private CredentialService credentialService;
+
 	
 	UserFoundService(UserFoundRepository userFoundRepository) {
 		this.userFoundRepository = userFoundRepository;
@@ -29,13 +36,25 @@ public class UserFoundService {
 	}
 	
 	public UserFound postUserFound(UserFound user_Found) {
+		System.out.println(user_Found);
 		try {
-			UserFound user = new UserFound();
+			// Would be changed if added Login Functionality
+			if(!user_Found.isLoggedIn()) {
+				// Here Change to return login page
+				throw new RuntimeException("User not Logged In");
+			}
+			//check tags
+			if(user_Found.getTags().isEmpty()) {
+				user_Found.setTags(new ArrayList<String>());
+			}
 			
-			userFoundRepository.save(user_Found);
-			// Check tags
+			Long id = user_Found.getUser_Id();
+			System.out.println(id);
+			Credentials credential = credentialService.getCredentialsById(id);
+			user_Found.setCredentials(credential);
+			System.out.println("User Found After Adding Credentials : "+user_Found);
 			// Add user
-			return null;
+			return userFoundRepository.save(user_Found);
 		} catch(Exception e) {
 			throw new RuntimeException("Failed to post user: ", e);
 		}

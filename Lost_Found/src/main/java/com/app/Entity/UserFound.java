@@ -58,7 +58,7 @@ public class UserFound extends User
 	public void setTags(List<String> tags) {
 		this.tags = tags;
 	}
-
+	
 	@Override
 	public String toString() {
 		return "UserFound [place=" + place + ", time=" + time + ", tags=" + tags + "]";

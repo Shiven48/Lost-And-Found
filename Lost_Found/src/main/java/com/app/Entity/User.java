@@ -43,6 +43,9 @@ public abstract class User
     @Column(nullable = false, updatable = true)
     protected LocalDateTime lastModified;
     
+    @Column(nullable = false, updatable = true)
+    protected boolean isLoggedIn;
+    
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "credentials_id")
     @JsonManagedReference
@@ -105,6 +108,14 @@ public abstract class User
 
 	public void setLastModified(LocalDateTime lastModified) {
 		this.lastModified = lastModified;
+	}
+	
+	public boolean isLoggedIn() {
+		return isLoggedIn;
+	}
+
+	public void setLoggedIn(boolean isLoggedIn) {
+		this.isLoggedIn = isLoggedIn;
 	}
 
 	@Override
