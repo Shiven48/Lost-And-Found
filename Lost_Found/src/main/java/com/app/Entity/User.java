@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -37,12 +39,13 @@ public abstract class User
     @Column(nullable = false, updatable = false)
     protected LocalDateTime Registration_Date;
     
-    @UpdateTimestamp  // Replace @CurrentTimestamp with @UpdateTimestamp
+    @UpdateTimestamp
     @Column(nullable = false, updatable = true)
     protected LocalDateTime lastModified;
     
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "credentials_id")
+    @JsonManagedReference
     private Credentials credentials;
 
 	public User() {}

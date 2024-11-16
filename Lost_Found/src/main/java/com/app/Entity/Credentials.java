@@ -1,5 +1,7 @@
 package com.app.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -26,6 +28,7 @@ public class Credentials
 	private String password;
 	    
 	@OneToOne(mappedBy = "credentials")
+	@JsonBackReference
 	private User user;
 	    
 	public Credentials() {}
