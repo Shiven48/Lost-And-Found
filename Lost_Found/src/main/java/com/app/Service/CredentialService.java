@@ -1,5 +1,7 @@
 package com.app.Service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.app.Entity.Credentials;
@@ -31,6 +33,11 @@ public class CredentialService {
 			 throw new RuntimeException("Failed to retrieve user with id: "+credential_id, e);
 		}
 
+	}
+
+	public List<Credentials> getAllCredentials() {
+		// Add some logica
+		return null;
 	}
 
 }
