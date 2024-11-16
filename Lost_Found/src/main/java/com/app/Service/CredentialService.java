@@ -1,10 +1,13 @@
 package com.app.Service;
 
+import java.util.Collections;
 import java.util.List;
 
+import org.springframework.boot.autoconfigure.ldap.embedded.EmbeddedLdapProperties.Credential;
 import org.springframework.stereotype.Service;
 
 import com.app.Entity.Credentials;
+import com.app.Entity.UserFound;
 import com.app.Repository.CredentialsRepository;
 
 @Service
@@ -36,8 +39,22 @@ public class CredentialService {
 	}
 
 	public List<Credentials> getAllCredentials() {
-		// Add some logica
-		return null;
+		try {
+			List<Credentials> allCredentials = credentialsRepository.findAll();
+			return allCredentials.isEmpty() ? Collections.emptyList() : allCredentials;	
+		} catch(Exception e) {
+            throw new RuntimeException("Failed to retrieve users", e);
+		}
+	}
+
+	public Credentials getCredentialId(Long id) {
+		try {			
+			return credentialsRepository
+										.findById(id)
+										.orElse(new Credentials());
+		} catch(Exception e) {
+			throw new RuntimeException("Failed to retrieve user with id: "+id, e);
+		}
 	}
 
 }

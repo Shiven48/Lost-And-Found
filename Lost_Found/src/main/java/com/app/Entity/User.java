@@ -23,7 +23,7 @@ import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.Email;
 
 @Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class User 
 {
     @Id

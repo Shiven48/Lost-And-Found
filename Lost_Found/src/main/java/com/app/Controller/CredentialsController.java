@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +31,12 @@ public class CredentialsController {
 	public ResponseEntity<Credentials> postCredentials(@RequestBody Credentials credential) {
 		Credentials response_credential = credentialService.addCredentials(credential);
 		return ResponseEntity.status(HttpStatus.CREATED).body(response_credential);
+	}
+	
+	@GetMapping(path="credentials/credential/{id}",name = "GetCredentials")
+	public ResponseEntity<Credentials> GetCredentialsById(@PathVariable("id") Long id) {
+		Credentials response_AllCredential = credentialService.getCredentialId(id);
+		return ResponseEntity.status(HttpStatus.CREATED).body(response_AllCredential);
 	}
 	
 	@GetMapping(path="credentials/credential",name = "GetCredentials")
