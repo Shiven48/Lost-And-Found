@@ -16,7 +16,6 @@ public class UserFoundService {
 
 	@Autowired
 	private UserFoundRepository userFoundRepository;
-	
 	@Autowired
 	private CredentialService credentialService;
 
@@ -43,7 +42,7 @@ public class UserFoundService {
 				// Here Change to return login page
 				throw new RuntimeException("User not Logged In");
 			}
-			//check tags
+
 			if(user_Found.getTags().isEmpty()) {
 				user_Found.setTags(new ArrayList<String>());
 			}
