@@ -24,22 +24,32 @@ public class UserFoundController {
 		this.userService = userService;
 	}
 
+	// Endpoint to get all users
 	@GetMapping(path = "users/userfound",name = "foundUserAll")
 	public ResponseEntity<List<UserFound>> fetchAll() {
 		List<UserFound> user = userService.getuserFoundAll();
 		return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(user);
 	}
 
+	// Endpoint to get all users by their id
 	@GetMapping(path = "users/userfound/{id}",name = "fetchById")
 	public ResponseEntity<User> fetchById(@PathVariable("id") Long id) {
 		User user = userService.getById(id);
 		return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(user);
 	}
 
+	// Endpoint to post a user
 	@PostMapping(consumes = {"application/json","application/xml"},path = "/users/userfound")
 	public ResponseEntity<User> postUserFound(@RequestBody UserFound user_Found,HttpSession session) {
 		UserFound userFound= userService.postUserFound(user_Found,session);
 		return ResponseEntity.status(HttpStatus.CREATED).body(userFound);
+	}
+
+	// - Endpoint to update user details.
+	@PutMapping(name="updateUserFound",path = "users/userfound/{id}")
+	public ResponseEntity<User> updateUserFound(@RequestBody UserFound userFound,@PathVariable("id") Long id) {
+		UserFound result_userFound = userService.updateUserFound(userFound,id);
+		return ResponseEntity.status(HttpStatus.OK).body(result_userFound);
 	}
 
 }
@@ -52,10 +62,7 @@ public class UserFoundController {
 
 
 
-//3. **Update User**
-// - `PUT /users/{id}`
-// - Endpoint to update user details.
-//
+
 //4. **Delete User**
 // - `DELETE /users/{id}`
 // - Endpoint to delete a user by their ID.

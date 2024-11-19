@@ -2,6 +2,7 @@ package com.app.Controller;
 
 import java.util.List;
 
+import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,8 +29,9 @@ public class CredentialsController {
 	
 	// sign in
 	@PostMapping(path="credentials/credential",name = "PostCredentials",consumes = {"application/json","application/xml"})
-	public ResponseEntity<Credentials> postCredentials(@RequestBody Credentials credential) {
+	public ResponseEntity<Credentials> postCredentials(@RequestBody Credentials credential, HttpSession session) {
 		Credentials response_credential = credentialService.addCredentials(credential);
+		session.setAttribute("credential", response_credential);
 		return ResponseEntity.status(HttpStatus.CREATED).body(response_credential);
 	}
 
@@ -37,13 +39,13 @@ public class CredentialsController {
 	@GetMapping(path="credentials/credential/{id}",name = "GetCredentials")
 	public ResponseEntity<Credentials> GetCredentialsById(@PathVariable("id") Long id) {
 		Credentials response_AllCredential = credentialService.getCredentialsById(id);
-		return ResponseEntity.status(HttpStatus.CREATED).body(response_AllCredential);
+		return ResponseEntity.status(HttpStatus.OK).body(response_AllCredential);
 	}
 
 	// get all credentials
 	@GetMapping(path="credentials/credential",name = "GetCredentials")
 	public ResponseEntity<List<Credentials>> GetCredentials() {
 		List<Credentials> response_AllCredential = credentialService.getAllCredentials();
-		return ResponseEntity.status(HttpStatus.CREATED).body(response_AllCredential);
+		return ResponseEntity.status(HttpStatus.OK).body(response_AllCredential);
 	}
 }

@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +27,17 @@ public class UserFoundService {
 		this.userFoundRepository = userFoundRepository;
 	}
 
-	// Get found user by id
+	// Get all found users service
+	public List<UserFound> getuserFoundAll() {
+		try {
+			List<UserFound> AllUserFound = userFoundRepository.findAll();
+			return AllUserFound.isEmpty() ? Collections.emptyList() : AllUserFound;
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to retrieve users", e);
+		}
+	}
+
+	// Get found user by id service
 	public UserFound getById(Long id) {
 		try {
 			return userFoundRepository
@@ -37,11 +48,11 @@ public class UserFoundService {
 		}
 	}
 
-	// post User Found
+	// post User Found service
 	public UserFound postUserFound(UserFound user_Found, HttpSession session) {
 		try {
-			Credentials temp_creds = (Credentials) session.getAttribute("created_credentials");
-			System.out.println(temp_creds);
+			Credentials temp_creds = (Credentials) session.getAttribute("credential");
+			System.out.println("Retrived Credentials : "+temp_creds);
 
 			Credentials credentials = new Credentials();
 			credentials.setCredentialsId(temp_creds.getCredentialsId());
@@ -55,16 +66,16 @@ public class UserFoundService {
 		}
 	}
 
-	// Get all found users
-	public List<UserFound> getuserFoundAll() {
+	// Update User Found service
+	public UserFound updateUserFound(UserFound userFound , Long id) {
 		try {
-			List<UserFound> AllUserFound = userFoundRepository.findAll();
-			return AllUserFound.isEmpty() ? Collections.emptyList() : AllUserFound;
+			UserFound resp_userFound = getById(id);
+			BeanUtils.copyProperties(userFound, resp_userFound, "id");
+			return userFoundRepository.save(resp_userFound);
 		} catch (Exception e) {
-			throw new RuntimeException("Failed to retrieve users", e);
+			throw new RuntimeException("Failed to update user found", e);
 		}
 	}
-
 }
 
 
