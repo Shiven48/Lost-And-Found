@@ -32,13 +32,15 @@ public class CredentialsController {
 		Credentials response_credential = credentialService.addCredentials(credential);
 		return ResponseEntity.status(HttpStatus.CREATED).body(response_credential);
 	}
-	
+
+	// log in
 	@GetMapping(path="credentials/credential/{id}",name = "GetCredentials")
 	public ResponseEntity<Credentials> GetCredentialsById(@PathVariable("id") Long id) {
-		Credentials response_AllCredential = credentialService.getCredentialId(id);
+		Credentials response_AllCredential = credentialService.getCredentialsById(id);
 		return ResponseEntity.status(HttpStatus.CREATED).body(response_AllCredential);
 	}
-	
+
+	// get all credentials
 	@GetMapping(path="credentials/credential",name = "GetCredentials")
 	public ResponseEntity<List<Credentials>> GetCredentials() {
 		List<Credentials> response_AllCredential = credentialService.getAllCredentials();

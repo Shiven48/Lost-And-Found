@@ -19,6 +19,7 @@ public class CredentialService {
 		this.credentialsRepository = credentialsRepository;
 	}
 
+	// post credentials service
 	public Credentials addCredentials(Credentials credential) {
 		try {
 			return credentialsRepository.save(credential);
@@ -26,7 +27,8 @@ public class CredentialService {
 			throw new RuntimeException("Failed to add credentials", e);
 		}
 	}
-	
+
+	// get credentials by id service
 	public Credentials getCredentialsById(Long credential_id) {
 		try {
 			return credentialsRepository
@@ -38,22 +40,13 @@ public class CredentialService {
 
 	}
 
+	// get all credentials service
 	public List<Credentials> getAllCredentials() {
 		try {
 			List<Credentials> allCredentials = credentialsRepository.findAll();
 			return allCredentials.isEmpty() ? Collections.emptyList() : allCredentials;	
 		} catch(Exception e) {
             throw new RuntimeException("Failed to retrieve users", e);
-		}
-	}
-
-	public Credentials getCredentialId(Long id) {
-		try {			
-			return credentialsRepository
-										.findById(id)
-										.orElse(new Credentials());
-		} catch(Exception e) {
-			throw new RuntimeException("Failed to retrieve user with id: "+id, e);
 		}
 	}
 
