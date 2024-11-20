@@ -45,9 +45,9 @@ public class CredentialsController {
 		return ResponseEntity.status(HttpStatus.OK).body(response_AllCredential);
 	}
 
-	// update existing credential
+	// Endpoint to update existing credential
 	@PutMapping(name="updateCredential", path="credentials/credential/{id}")
-	public ResponseEntity<?> updateCredentials(@PathVariable("id") Long id, @RequestBody Credentials credential){
+	public ResponseEntity<Credentials> updateCredentials(@PathVariable("id") Long id, @RequestBody Credentials credential){
 		if(id == null) {
 			throw new IllegalArgumentException("User id cannot be null");
 		}
@@ -57,5 +57,17 @@ public class CredentialsController {
 		} catch(Exception e) {
 			throw new RuntimeException("Failed to update credentials", e);
 		}
+	}
+
+	// Endpoint to delete a credential
+	@DeleteMapping(name="deleteCredential",path="credentials/credential/{id}")
+	public ResponseEntity<Credentials> deleteCredentials(@PathVariable("id") Long id) {
+		try{
+			Credentials deleted_credential = credentialService.deleteCredentialById(id);
+			return ResponseEntity.status(HttpStatus.OK).body(deleted_credential);
+		} catch(Exception e) {
+			throw new RuntimeException("Failed to delete credentials", e);
+		}
+
 	}
 }

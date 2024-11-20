@@ -3,7 +3,9 @@ package com.app.Service;
 import java.util.Collections;
 import java.util.List;
 
+import com.app.Entity.User;
 import com.app.Exception.ExceptionTypes.ResourceNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.boot.autoconfigure.ldap.embedded.EmbeddedLdapProperties.Credential;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,7 @@ public class CredentialService {
 	}
 
 	// post credentials service
+	@Transactional
 	public Credentials addCredentials(Credentials credential) {
 		try {
 			return credentialsRepository.save(credential);
@@ -52,6 +55,7 @@ public class CredentialService {
 	}
 
 	// update the credential by id
+	@Transactional
     public Credentials updateCredentialsService(Long id, Credentials credential) {
 		if(id == null) {
 			throw new IllegalArgumentException("User id cannot be null");
@@ -72,4 +76,26 @@ public class CredentialService {
 			throw new RuntimeException("Failed to update credentials", e);
 		}
     }
+
+	@Transactional
+	public Credentials deleteCredentialById(Long id) {
+		if(id == null) {
+			throw new IllegalArgumentException("User id cannot be null");
+		}
+
+		Credentials credential = credentialsRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Credential not found with id: " + id));
+
+		if (credential.getUser() != null) {
+			User user = credential.getUser();
+			user.setCredentials(null);  // Break bidirectional relationship
+			credential.setUser(null);
+		}
+		credentialsRepository.delete(credential);
+
+		if (credentialsRepository.existsById(id)) {
+			throw new RuntimeException("Failed to delete credential");
+		}
+		return credential;
+	}
 }
