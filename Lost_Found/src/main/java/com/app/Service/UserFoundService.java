@@ -74,16 +74,6 @@ public class UserFoundService {
 	}
 
 	// Update User Found service
-//	public UserFound updateUserFound(UserFound userFound , Long id) {
-//		try {
-//			UserFound resp_userFound = getById(id);
-//			BeanUtils.copyProperties(userFound, resp_userFound, "id");
-//			return userFoundRepository.save(resp_userFound);
-//		} catch (Exception e) {
-//			throw new RuntimeException("Failed to update user found", e);
-//		}
-//	}
-
 	public UserFound updateUserFound(UserFound userFound, Long id) {
 		try {
 			UserFound resp_userFound = getById(id);
