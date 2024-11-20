@@ -28,23 +28,23 @@ public abstract class User
 {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    protected Long User_Id;
+    protected Long user_id;
     
     @NotBlank
     @Size(max = 25, message = "The name must be less than 25 characters")
     @Column(nullable = false, updatable = true)
-    protected String Name;
+    protected String name;
     
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
-    protected LocalDateTime Registration_Date;
+    protected LocalDateTime registration_date;
     
     @UpdateTimestamp
     @Column(nullable = false, updatable = true)
-    protected LocalDateTime lastModified;
+    protected LocalDateTime lastmodified;
     
     @Column(nullable = false, updatable = true)
-    protected boolean isLoggedIn;
+    protected boolean isloggedin;
     
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "credentials_id")
@@ -60,30 +60,30 @@ public abstract class User
 			@NotBlank String password,
 			LocalDateTime registration_Date, 
 			LocalDateTime lastModified,
-			Credentials credientials) 
+			Credentials credentials_id)
 	{
 		super();
-		User_Id = user_Id;
-		Name = name;
-		this.credentials = credientials;
-		Registration_Date = registration_Date;
-		this.lastModified = lastModified;
+		this.user_id = user_Id;
+		this.name = name;
+		this.credentials = credentials_id;
+		this.registration_date = registration_Date;
+		this.lastmodified = lastModified;
 	}
 
 	public Long getUser_Id() {
-		return User_Id;
+		return user_id;
 	}
 
 	public void setUser_Id(Long user_Id) {
-		User_Id = user_Id;
+		this.user_id = user_Id;
 	}
 
 	public String getName() {
-		return Name;
+		return name;
 	}
 
 	public void setName(String name) {
-		Name = name;
+		this.name = name;
 	}
 
 	public Credentials getCredentials() {
@@ -95,33 +95,32 @@ public abstract class User
 	}
 
 	public LocalDateTime getRegistration_Date() {
-		return Registration_Date;
+		return registration_date;
 	}
 
 	public void setRegistration_Date(LocalDateTime registration_Date) {
-		Registration_Date = registration_Date;
+		registration_date = registration_Date;
 	}
 
 	public LocalDateTime getLastModified() {
-		return lastModified;
+		return lastmodified;
 	}
 
 	public void setLastModified(LocalDateTime lastModified) {
-		this.lastModified = lastModified;
+		this.lastmodified = lastModified;
 	}
 	
 	public boolean isLoggedIn() {
-		return isLoggedIn;
+		return isloggedin;
 	}
 
 	public void setLoggedIn(boolean isLoggedIn) {
-		this.isLoggedIn = isLoggedIn;
+		this.isloggedin = isLoggedIn;
 	}
 
 	@Override
 	public String toString() {
-		return "User [User_Id=" + User_Id + ", Name=" + Name + ", Registration_Date=" + Registration_Date
-				+ ", lastModified=" + lastModified + ", credentials=" + credentials + "]";
+		return "User [User_Id=" + user_id + ", Name=" + name + ", Registration_Date=" + registration_date
+				+ ", lastModified=" + lastmodified + ", credentials=" + credentials + "]";
 	}
-
 }

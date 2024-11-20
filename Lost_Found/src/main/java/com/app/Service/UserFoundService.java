@@ -4,6 +4,7 @@ package com.app.Service;
 import java.util.Collections;
 import java.util.List;
 
+import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +18,15 @@ import com.app.Repository.UserFoundRepository;
 @Service
 public class UserFoundService {
 
-	@Autowired
 	private UserFoundRepository userFoundRepository;
-	@Autowired
 	private CredentialService credentialService;
+	private EntityManager entityManager;
 
-
-	UserFoundService(UserFoundRepository userFoundRepository) {
+	@Autowired
+	UserFoundService(UserFoundRepository userFoundRepository, CredentialService credentialService, EntityManager entityManager) {
 		this.userFoundRepository = userFoundRepository;
+		this.credentialService = credentialService;
+		this.entityManager = entityManager;
 	}
 
 	// Get all found users service
@@ -52,14 +54,19 @@ public class UserFoundService {
 	public UserFound postUserFound(UserFound user_Found, HttpSession session) {
 		try {
 			Credentials temp_creds = (Credentials) session.getAttribute("credential");
-			System.out.println("Retrived Credentials : "+temp_creds);
 
-			Credentials credentials = new Credentials();
-			credentials.setCredentialsId(temp_creds.getCredentialsId());
-			credentials.setEmail(temp_creds.getEmail());
-			credentials.setPassword(temp_creds.getPassword());
+			Credentials credentials = entityManager.find(Credentials.class, temp_creds.getCredentialsId());
+			if(credentials == null){
+				credentials = entityManager.merge(temp_creds);
+			}
 
 			user_Found.setCredentials(credentials);
+			credentials.setUser(user_Found);
+
+			if (user_Found.getName() == null || user_Found.getName().trim().isEmpty()) {
+				throw new IllegalArgumentException("Name cannot be blank");
+			}
+
 			return userFoundRepository.save(user_Found);
 		} catch(Exception e) {
 			throw new RuntimeException("Failed to post user found", e);
@@ -67,10 +74,51 @@ public class UserFoundService {
 	}
 
 	// Update User Found service
-	public UserFound updateUserFound(UserFound userFound , Long id) {
+//	public UserFound updateUserFound(UserFound userFound , Long id) {
+//		try {
+//			UserFound resp_userFound = getById(id);
+//			BeanUtils.copyProperties(userFound, resp_userFound, "id");
+//			return userFoundRepository.save(resp_userFound);
+//		} catch (Exception e) {
+//			throw new RuntimeException("Failed to update user found", e);
+//		}
+//	}
+
+	public UserFound updateUserFound(UserFound userFound, Long id) {
 		try {
 			UserFound resp_userFound = getById(id);
-			BeanUtils.copyProperties(userFound, resp_userFound, "id");
+
+			if (userFound.getPlace() != null) {
+				resp_userFound.setPlace(userFound.getPlace());
+			}
+			if (userFound.getTime() != null) {
+				resp_userFound.setTime(userFound.getTime());
+			}
+			if (userFound.getTags() != null) {
+				resp_userFound.setTags(userFound.getTags());
+			}
+			if (userFound.getName() != null) {
+				resp_userFound.setName(userFound.getName());
+			}
+			if (userFound.getRegistration_Date() != null) {
+				resp_userFound.setRegistration_Date(userFound.getRegistration_Date());
+			}
+			if (userFound.getLastModified() != null) {
+				resp_userFound.setLastModified(userFound.getLastModified());
+			}
+			resp_userFound.setLoggedIn(userFound.isLoggedIn());
+
+			if (userFound.getCredentials() != null) {
+				Credentials newCredentials = userFound.getCredentials();
+				Credentials existingCredentials = resp_userFound.getCredentials();
+
+				if (newCredentials.getEmail() != null) {
+					existingCredentials.setEmail(newCredentials.getEmail());
+				}
+				if (newCredentials.getPassword() != null) {
+					existingCredentials.setPassword(newCredentials.getPassword());
+				}
+			}
 			return userFoundRepository.save(resp_userFound);
 		} catch (Exception e) {
 			throw new RuntimeException("Failed to update user found", e);
