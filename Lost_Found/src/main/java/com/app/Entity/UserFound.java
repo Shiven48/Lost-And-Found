@@ -3,12 +3,7 @@ package com.app.Entity;
 import java.time.LocalTime;
 import java.util.List;
 
-import jakarta.persistence.CollectionTable;
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
 @Entity
 public class UserFound extends User
@@ -24,7 +19,7 @@ public class UserFound extends User
 	@CollectionTable(name = "user_found_tags" , joinColumns = {@JoinColumn(name = "user_found_id")})
 	private List<String> tags;
 	
-	@OneToMany(mappedBy = "userfound")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "userfound")
 	private List<Object> found_object;
 
 	public UserFound() {}

@@ -45,30 +45,29 @@ public class UserFoundController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(userFound);
 	}
 
-	// - Endpoint to update user details.
+	//  Endpoint to update user details.
 	@PutMapping(name="updateUserFound",path = "users/userfound/{id}")
 	public ResponseEntity<User> updateUserFound(@RequestBody UserFound userFound,@PathVariable("id") Long id) {
 		UserFound result_userFound = userService.updateUserFound(userFound,id);
 		return ResponseEntity.status(HttpStatus.OK).body(result_userFound);
 	}
 
+	// Endpoint to delete a user by their ID.
+	@DeleteMapping(name="deleteuserFound",path = "/users/userfound/{id}")
+	public ResponseEntity<User> deleteUserFound(@PathVariable("id") Long id) {
+		try {
+			if (id == null) {
+				throw new IllegalArgumentException("User id cannot be null");
+			}
+			UserFound resp_userFound = userService.deleteUserById(id);
+			if (resp_userFound == null) {
+				throw new IllegalArgumentException("Invalid user id:" + id);
+			}
+			return ResponseEntity.status(HttpStatus.OK).body(resp_userFound);
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to delete user found", e);
+		}
+	}
 }
-
-
-
-
-
-
-
-
-
-
-//4. **Delete User**
-// - `DELETE /users/{id}`
-// - Endpoint to delete a user by their ID.
-//
-//5. **Get All Users**
-// - `GET /users`
-// - Endpoint to fetch a list of all users.
 
 

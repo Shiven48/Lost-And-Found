@@ -6,6 +6,7 @@ import java.util.List;
 
 import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -74,6 +75,7 @@ public class UserFoundService {
 	}
 
 	// Update User Found service
+	@Transactional
 	public UserFound updateUserFound(UserFound userFound, Long id) {
 		try {
 			UserFound resp_userFound = getById(id);
@@ -114,8 +116,22 @@ public class UserFoundService {
 			throw new RuntimeException("Failed to update user found", e);
 		}
 	}
+
+	@Transactional
+	public UserFound deleteUserById(Long id) {
+		try {
+			if(id == null) {
+				throw new IllegalArgumentException("User id cannot be null");
+			}
+			UserFound resp_userFound= userFoundRepository.findById(id)
+					.orElseThrow(() -> new IllegalArgumentException("Invalid user id:" + id));
+			// Explicitly loading the tags to avoid LazyInitializationException
+			resp_userFound.getTags().size();
+			userFoundRepository.delete(resp_userFound);
+			return resp_userFound;
+		} catch(Exception e) {
+			throw new RuntimeException("Failed to delete user found", e);
+		}
+	}
 }
-
-
-
 
