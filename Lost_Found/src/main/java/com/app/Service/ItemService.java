@@ -2,22 +2,25 @@ package com.app.Service;
 
 import com.app.Entity.Item;
 import com.app.Entity.UserFound;
-import com.app.Entity.UserLost;
+import com.app.Exception.ExceptionTypes.ResourceNotFoundException;
 import com.app.Repository.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ItemService {
 
+    private final ItemRepository itemRepository;
     ItemRepository objectRepository;
     UserFoundService userFoundService;
     // UserLostService userLostService;
 
     @Autowired
-    public ItemService(ItemRepository objectRepository, UserFoundService userFoundService) {
+    public ItemService(ItemRepository objectRepository, UserFoundService userFoundService, ItemRepository itemRepository) {
         this.objectRepository = objectRepository;
         this.userFoundService = userFoundService;
+        this.itemRepository = itemRepository;
     }
 
     public Object createItem(Item item) {
@@ -43,9 +46,58 @@ public class ItemService {
                 item.setUserfound(null);
             }
             // Same conditions for the userLost
-            return response_item;
+            return itemRepository.save(response_item);
         } catch (Exception e) {
             throw new RuntimeException("Failed to create object", e);
+        }
+    }
+
+    public Item getById(Long id) {
+        if(id == null) {
+            throw new IllegalArgumentException("Object id cannot be null");
+        }
+        try{
+            return itemRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid user id:" + id));
+        } catch(Exception e) {
+            throw new RuntimeException("Failed to retrieve object with id: "+id, e);
+        }
+    }
+
+    public Item updateItem(Item item, Long id) {
+        if(item == null) {
+            throw new IllegalArgumentException("Object cannot be null");
+        }
+        try{
+            if(id == null) {
+                throw new IllegalArgumentException("Object id cannot be null");
+            }
+            Item updated_Item = getById(id);
+            updated_Item.setName(item.getName());
+            updated_Item.setTime(item.getTime());
+            updated_Item.setPlace(item.getPlace());
+            updated_Item.setObj_image(item.getObj_image());
+            updated_Item.setLost_found(item.getLost_found());
+            updated_Item.setDescription(item.getDescription());
+            updated_Item.setType(item.getType());
+
+            //Get the id of the userlost and userfound
+            Long userfound_id = item.getUserfound().getUser_Id();
+            Long userlost_id = item.getUserlost().getUser_Id();
+
+            if(userfound_id != null && userlost_id != null) {
+                updated_Item.setUserfound(userFoundService.getById(userfound_id));
+            // updated_Item.setUserlost(userLostService.getById(userlost_id));
+            }
+            if(userfound_id == null){
+                updated_Item.setUserfound(null);
+            }
+            if(userlost_id == null){
+                updated_Item.setUserlost(null);
+            }
+            return updated_Item;
+        }catch(Exception e) {
+            throw new RuntimeException("Failed to update item with id "+id,e);
         }
     }
 }
