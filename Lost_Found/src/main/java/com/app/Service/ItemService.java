@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ItemService {
 
@@ -98,6 +100,28 @@ public class ItemService {
             return updated_Item;
         }catch(Exception e) {
             throw new RuntimeException("Failed to update item with id "+id,e);
+        }
+    }
+
+    public Item deleteItem(Long id) {
+        if(id == null) {
+            throw new IllegalArgumentException("Object id cannot be null");
+        }
+        try{
+            Item resp_item = getById(id);
+            itemRepository.delete(resp_item);
+            return resp_item;
+        } catch(Exception e){
+            throw new RuntimeException("Failed to delete object with id: "+id, e);
+        }
+    }
+
+    public List<Item> getAllitems() {
+        try{
+            List<Item> resp_AllItems = itemRepository.findAll();
+            return resp_AllItems;
+        } catch(Exception e){
+            throw new RuntimeException("Failed to retrieve all items", e);
         }
     }
 }

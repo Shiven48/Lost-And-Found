@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api")
 public class ItemController {
@@ -34,8 +36,21 @@ public class ItemController {
     // Endpoint to update an object (e.g., change its details or type).
     @PutMapping(name = "updateItem",path = "objects/object/{id}")
     public ResponseEntity<Item> updateItem(@RequestBody Item item, @PathVariable("id") Long id){
-        Item upadted_item = itemService.updateItem(item,id);
-        return ResponseEntity.ok(upadted_item);
+        Item updated_item = itemService.updateItem(item,id);
+        return ResponseEntity.ok(updated_item);
+    }
+    // Endpoint to delete an object by its ID.
+    @DeleteMapping(name = "deleteItem",path = "objects/object/{id}")
+    public ResponseEntity<Object> deleteItem(@PathVariable("id") Long id){
+        Item deleted_Item = itemService.deleteItem(id);
+        return ResponseEntity.ok(deleted_Item);
+    }
+
+    // Endpoint to fetch a list of all objects (both lost and found).
+    @GetMapping(name="getAllItems", path = "objects")
+    public ResponseEntity<List<Item>> getAllItems(){
+        List<Item> resp_items = itemService.getAllitems();
+        return ResponseEntity.ok(resp_items);
     }
 
 }
@@ -55,15 +70,6 @@ public class ItemController {
 
 
 
-//
-//        21. **Delete Object**
-//        - `DELETE /objects/{id}`
-//        - Endpoint to delete an object by its ID.
-//
-//        22. **Get All Objects**
-//        - `GET /objects`
-//        - Endpoint to fetch a list of all objects (both lost and found).
-//
 //        23. **Get Found Objects (filter by type)**
 //        - `GET /objects/found`
 //        - Endpoint to fetch all "found" objects.
