@@ -1,6 +1,5 @@
 package com.app.Controller;
 
-import com.app.Entity.Credentials;
 import com.app.Entity.User;
 import com.app.Entity.UserFound;
 import com.app.Service.UserFoundService;

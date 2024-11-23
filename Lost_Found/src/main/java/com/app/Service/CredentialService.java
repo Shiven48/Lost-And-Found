@@ -16,7 +16,7 @@ import com.app.Repository.CredentialsRepository;
 @Service
 public class CredentialService {
 
-	private CredentialsRepository credentialsRepository;
+	private final CredentialsRepository credentialsRepository;
 
 	public CredentialService(CredentialsRepository credentialsRepository) {
 		this.credentialsRepository = credentialsRepository;
@@ -41,7 +41,6 @@ public class CredentialService {
 		} catch(Exception e) {
 			 throw new RuntimeException("Failed to retrieve user with id: "+credential_id, e);
 		}
-
 	}
 
 	// get all credentials service

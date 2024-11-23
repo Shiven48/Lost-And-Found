@@ -20,7 +20,7 @@ public class UserFound extends User
 	private List<String> tags;
 	
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "userfound")
-	private List<Object> found_object;
+	private List<Item> foundobject;
 
 	public UserFound() {}
 	
@@ -61,7 +61,7 @@ public class UserFound extends User
 
     @Override
 	public String toString() {
-		return "UserFound [user_id=" + user_id + ", name=" + name +
+		return "UserFound [user_id=" + userid + ", name=" + name +
 				", place=" + place + ", time=" + time + ", tags=" + tags + "]";
 	}
 }

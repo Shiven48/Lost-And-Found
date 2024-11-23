@@ -1,19 +1,16 @@
 package com.app.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import java.time.LocalTime;
+
 @Entity
-public class Object 
+public class Item
 {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
 	
 	@Size(max = 20)
@@ -25,7 +22,7 @@ public class Object
 	
 	private String type;
 	
-	private String obj_image;
+	private String objimage;
 	
 	@ManyToOne
 	@JoinColumn(name = "userfound_id")
@@ -35,37 +32,41 @@ public class Object
 	@JoinColumn(name = "userlost_id")
 	private UserLost userlost;
 	
-	private Lost_Found lost_found;		// Object type - Lost or Found 
+	private Lost_Found lost_found;		// Object type - Lost or Found
+
+	private String place;
+
+	private LocalTime time;
 	
-	public Object()
-	{	
-	}
+	public Item() {}
 	
-	public Object(int id, String name, String description, String type, String obj_image) {
+	public Item(int id, String name, String description, String type, String objimage,String place, LocalTime time) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.description = description;
 		this.type = type;
-		this.obj_image = obj_image;
+		this.objimage = objimage;
+		this.place = place;
+		this.time = time;
 	}
 
 	public int getId() {
-		return id;
+		return this.id;
 	}
 	public void setId(int id) {
 		this.id = id;
 	}
 	
 	public String getName() {
-		return name;
+		return this.name;
 	}
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	public String getDescription() {
-		return description;
+		return this.description;
 	}
 	public void setDescription(String description) {
 		this.description = description;
@@ -79,10 +80,10 @@ public class Object
 	}
 	
 	public String getObj_image() {
-		return obj_image;
+		return objimage;
 	}
 	public void setObj_image(String obj_image) {
-		this.obj_image = obj_image;
+		this.objimage = obj_image;
 	}
 	
 	public Lost_Found getLost_found() {
@@ -92,9 +93,39 @@ public class Object
 		this.lost_found = lost_found;
 	}
 
+	public UserFound getUserfound() {
+		return userfound;
+	}
+	public void setUserfound(UserFound userfound) {
+		this.userfound = userfound;
+	}
+
+	public UserLost getUserlost() {
+		return userlost;
+	}
+	public void setUserlost(UserLost userlost) {
+		this.userlost = userlost;
+	}
+
+	public String getPlace() {
+		return this.place;
+	}
+
+	public void setPlace(String place) {
+		this.place = place;
+	}
+
+	public LocalTime getTime() {
+		return time;
+	}
+
+	public void setTime(LocalTime time) {
+		this.time = time;
+	}
+
 	@Override
 	public String toString() {
-		return "Object [id=" + id + ", name=" + name + ", description=" + description + ", type=" + type
-				+ ", obj_image=" + obj_image + ", lost_found=" + lost_found + "]";
+		return "Item [id=" + id + ", name=" + name + ", description=" + description + ", type=" + type
+				+ ", obj_image=" + objimage + ", lost_found=" + lost_found + "]";
 	}
 }

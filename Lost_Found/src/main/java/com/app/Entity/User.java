@@ -28,7 +28,7 @@ public abstract class User
 {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    protected Long user_id;
+    protected Long userid;
     
     @NotBlank
     @Size(max = 25, message = "The name must be less than 25 characters")
@@ -37,7 +37,7 @@ public abstract class User
     
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
-    protected LocalDateTime registration_date;
+    protected LocalDateTime registrationdate;
     
     @UpdateTimestamp
     @Column(nullable = false, updatable = true)
@@ -54,28 +54,27 @@ public abstract class User
 	public User() {}
 	
 	public User(
-			Long user_Id,
+			Long userid,
 			@NotBlank @Size(max = 25, message = "The name must be less than 25 characters") String name,
-			@NotBlank @Email String email, 
-			@NotBlank String password,
-			LocalDateTime registration_Date, 
-			LocalDateTime lastModified,
-			Credentials credentials_id)
+			LocalDateTime registrationdate,
+			LocalDateTime lastmodified,
+			Credentials credentialsid,
+			Boolean isloggedin)
 	{
-		super();
-		this.user_id = user_Id;
+		this.userid = userid;
 		this.name = name;
-		this.credentials = credentials_id;
-		this.registration_date = registration_Date;
-		this.lastmodified = lastModified;
+		this.credentials = credentialsid;
+		this.registrationdate = registrationdate;
+		this.lastmodified = lastmodified;
+		this.isloggedin = isloggedin;
 	}
 
 	public Long getUser_Id() {
-		return user_id;
+		return userid;
 	}
 
 	public void setUser_Id(Long user_Id) {
-		this.user_id = user_Id;
+		this.userid = user_Id;
 	}
 
 	public String getName() {
@@ -95,11 +94,11 @@ public abstract class User
 	}
 
 	public LocalDateTime getRegistration_Date() {
-		return registration_date;
+		return registrationdate;
 	}
 
-	public void setRegistration_Date(LocalDateTime registration_Date) {
-		registration_date = registration_Date;
+	public void setRegistration_Date(LocalDateTime registrationdate) {
+		registrationdate = registrationdate;
 	}
 
 	public LocalDateTime getLastModified() {
@@ -120,7 +119,7 @@ public abstract class User
 
 	@Override
 	public String toString() {
-		return "User [User_Id=" + user_id + ", Name=" + name + ", Registration_Date=" + registration_date
+		return "User [User_Id=" + userid + ", Name=" + name + ", Registration_Date=" + registrationdate
 				+ ", lastModified=" + lastmodified + ", credentials=" + credentials + "]";
 	}
 }

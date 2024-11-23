@@ -16,7 +16,7 @@ public class Credentials
 {	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long credentials_id;
+	private Long credentialsid;
 	    
 	@Column(nullable = false, unique = true)
 	@Email
@@ -31,23 +31,23 @@ public class Credentials
 	    
 	public Credentials() {}
 	
-	public Credentials(Long credentials_id,
+	public Credentials(Long credentialsid,
 					   @NotBlank @Email String email,
 					   @NotBlank String password, User user) 
 	{
 		super();
-		this.credentials_id = credentials_id;
+		this.credentialsid = credentialsid;
 		this.email = email;
 		this.password = password;
 		this.user = user;
 	}
 
 	public Long getCredentialsId() {
-		return credentials_id;
+		return credentialsid;
 	}
 
 	public void setCredentialsId(Long credentials_id) {
-		this.credentials_id = credentials_id;
+		this.credentialsid = credentials_id;
 	}
 
 	public String getEmail() {
@@ -76,6 +76,6 @@ public class Credentials
 
 	@Override
 	public String toString() {
-		return "Credentials [credentialsId=" + credentials_id + ", Email=" + email + ", Password=" + password + "]";
+		return "Credentials [credentialsId=" + credentialsid + ", Email=" + email + ", Password=" + password + "]";
 	}
 }

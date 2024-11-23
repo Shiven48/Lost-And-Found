@@ -1,11 +1,14 @@
 package com.app.Entity;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @Entity
 public class UserLost extends User
@@ -21,12 +24,22 @@ public class UserLost extends User
 	private String imageid;
 	
 	@OneToMany(mappedBy = "userlost")
-	private List<Object> lost_object;
+	private List<Item> lostobject;
 
 	public UserLost() {}
-	
-	public UserLost(String place, LocalTime time, String imageid) {
-		super();
+
+	public UserLost(
+			Long userid,
+			@NotBlank @Size(max = 25, message = "The name must be less than 25 characters") String name,
+			LocalDateTime registrationdate,
+			LocalDateTime lastmodified,
+			boolean isloggedin,
+			Credentials credentials,
+			String place,
+			LocalTime time,
+			String imageid
+	) {
+		super(userid, name, registrationdate, lastmodified, credentials, isloggedin);
 		this.place = place;
 		this.time = time;
 		this.imageid = imageid;
