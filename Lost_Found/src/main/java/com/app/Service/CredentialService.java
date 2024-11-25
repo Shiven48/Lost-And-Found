@@ -6,11 +6,9 @@ import java.util.List;
 import com.app.Entity.User;
 import com.app.Exception.ExceptionTypes.ResourceNotFoundException;
 import jakarta.transaction.Transactional;
-import org.springframework.boot.autoconfigure.ldap.embedded.EmbeddedLdapProperties.Credential;
 import org.springframework.stereotype.Service;
 
 import com.app.Entity.Credentials;
-import com.app.Entity.UserFound;
 import com.app.Repository.CredentialsRepository;
 
 @Service

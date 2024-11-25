@@ -11,47 +11,47 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 public class ItemController {
-
-    ItemService itemService;
-
-    @Autowired
-    public ItemController(ItemService itemService){
-        this.itemService = itemService;
-    }
-
-    // Endpoint to create a new object (could be a lost or found object).
-    @PostMapping(name = "AddObject", path = "/objects/object",consumes = {"Application/xml","Application/json"})
-    public ResponseEntity<Object> addItem(@RequestBody Item item){
-        Object resp_Object = itemService.createItem(item);
-        return ResponseEntity.ok(resp_Object);
-    }
-
-    // Endpoint to fetch an object by its ID.
-    @GetMapping(name="getItem",path="objects/object/{id}")
-    public ResponseEntity<Item> getItemById(@PathVariable("id") Long id){
-        Item resp_item = itemService.getById(id);
-        return ResponseEntity.ok(resp_item);
-    }
-
-    // Endpoint to update an object (e.g., change its details or type).
-    @PutMapping(name = "updateItem",path = "objects/object/{id}")
-    public ResponseEntity<Item> updateItem(@RequestBody Item item, @PathVariable("id") Long id){
-        Item updated_item = itemService.updateItem(item,id);
-        return ResponseEntity.ok(updated_item);
-    }
-    // Endpoint to delete an object by its ID.
-    @DeleteMapping(name = "deleteItem",path = "objects/object/{id}")
-    public ResponseEntity<Object> deleteItem(@PathVariable("id") Long id){
-        Item deleted_Item = itemService.deleteItem(id);
-        return ResponseEntity.ok(deleted_Item);
-    }
-
-    // Endpoint to fetch a list of all objects (both lost and found).
-    @GetMapping(name="getAllItems", path = "objects")
-    public ResponseEntity<List<Item>> getAllItems(){
-        List<Item> resp_items = itemService.getAllitems();
-        return ResponseEntity.ok(resp_items);
-    }
+//
+//    ItemService itemService;
+//
+//    @Autowired
+//    public ItemController(ItemService itemService){
+//        this.itemService = itemService;
+//    }
+//
+//    // Endpoint to create a new object (could be a lost or found object).
+//    @PostMapping(name = "AddObject", path = "/objects/object",consumes = {"Application/xml","Application/json"})
+//    public ResponseEntity<Object> addItem(@RequestBody Item item){
+//        Object resp_Object = itemService.createItem(item);
+//        return ResponseEntity.ok(resp_Object);
+//    }
+//
+//    // Endpoint to fetch an object by its ID.
+//    @GetMapping(name="getItem",path="objects/object/{id}")
+//    public ResponseEntity<Item> getItemById(@PathVariable("id") Long id){
+//        Item resp_item = itemService.getById(id);
+//        return ResponseEntity.ok(resp_item);
+//    }
+//
+//    // Endpoint to update an object (e.g., change its details or type).
+//    @PutMapping(name = "updateItem",path = "objects/object/{id}")
+//    public ResponseEntity<Item> updateItem(@RequestBody Item item, @PathVariable("id") Long id){
+//        Item updated_item = itemService.updateItem(item,id);
+//        return ResponseEntity.ok(updated_item);
+//    }
+//    // Endpoint to delete an object by its ID.
+//    @DeleteMapping(name = "deleteItem",path = "objects/object/{id}")
+//    public ResponseEntity<Object> deleteItem(@PathVariable("id") Long id){
+//        Item deleted_Item = itemService.deleteItem(id);
+//        return ResponseEntity.ok(deleted_Item);
+//    }
+//
+//    // Endpoint to fetch a list of all objects (both lost and found).
+//    @GetMapping(name="getAllItems", path = "objects")
+//    public ResponseEntity<List<Item>> getAllItems(){
+//        List<Item> resp_items = itemService.getAllitems();
+//        return ResponseEntity.ok(resp_items);
+//    }
 
 }
 

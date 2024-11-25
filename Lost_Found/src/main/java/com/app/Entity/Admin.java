@@ -12,7 +12,7 @@ public class Admin
 {
 	@Column
 	@Id
-	private Integer adminid;
+	private Integer adminId;
 	
 	@Column
 	@Email
@@ -23,44 +23,5 @@ public class Admin
 	@Min(value = 8,message = "The password must be more than 8 alphabets")
 	@NotNull
 	private String password;
-
-	public Admin() {}
-	
-	public Admin(Integer adminId, @Email String adminEmail,
-			@Min(value = 8, message = "The password must be more than 8 alphabets") String adminPassword) {
-		super();
-		adminid = adminId;
-		email = adminEmail;
-		password = adminPassword;
-	}
-
-	public Integer getAdminId() {
-		return adminid;
-	}
-
-	public void setAdminId(Integer adminId) {
-		this.adminid = adminId;
-	}
-
-	public String getAdminEmail() {
-		return email;
-	}
-
-	public void setAdminEmail(String adminEmail) {
-		email = adminEmail;
-	}
-
-	public String getAdminPassword() {
-		return password;
-	}
-
-	public void setAdminPassword(String adminPassword) {
-		password = adminPassword;
-	}
-
-	@Override
-	public String toString() {
-		return "Admin [adminId=" + adminid + ", AdminEmail=" + email + ", AdminPassword=" + password + "]";
-	}
 
 }

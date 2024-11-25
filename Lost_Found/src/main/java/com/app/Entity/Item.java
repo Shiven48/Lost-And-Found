@@ -10,9 +10,10 @@ import java.time.LocalTime;
 public class Item
 {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	
+
+	@Column(nullable = false)
 	@Size(max = 20)
 	@NotBlank(message = "The name should not be empty")
 	private String name;
@@ -20,95 +21,92 @@ public class Item
 	@Size(max = 3000,message = "The message should not be more than 2000 words")
 	private String description;
 	
-	private String type;
+	private String obj_Type;
 	
-	private String objimage;
-	
-	@ManyToOne
-	@JoinColumn(name = "userfound_id")
-	private UserFound userfound;
-	
-	@ManyToOne
-	@JoinColumn(name = "userlost_id")
-	private UserLost userlost;
-	
-	private Lost_Found lost_found;		// Object type - Lost or Found
+	private String obj_Image;
+
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	private Lost_Found lost_found;
 
 	private String place;
 
 	private LocalTime time;
-	
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "finder_id")
+	private User finder;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "owner_id")
+	private User owner;
+
 	public Item() {}
-	
-	public Item(int id, String name, String description, String type, String objimage,String place, LocalTime time) {
-		super();
-		this.id = id;
+
+	public Item(String name, String description, String obj_Type,
+				String obj_Image, Lost_Found lost_found, String place,
+				LocalTime time, User finder, User owner) {
 		this.name = name;
 		this.description = description;
-		this.type = type;
-		this.objimage = objimage;
+		this.obj_Type = obj_Type;
+		this.obj_Image = obj_Image;
+		this.lost_found = lost_found;
 		this.place = place;
 		this.time = time;
+		this.finder = finder;
+		this.owner = owner;
 	}
 
 	public int getId() {
-		return this.id;
+		return id;
 	}
+
 	public void setId(int id) {
 		this.id = id;
 	}
-	
+
 	public String getName() {
-		return this.name;
+		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
 
 	public String getDescription() {
-		return this.description;
+		return description;
 	}
+
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
-	public String getType() {
-		return type;
+
+	public String getObj_Type() {
+		return obj_Type;
 	}
-	public void setType(String type) {
-		this.type = type;
+
+	public void setObj_Type(String obj_Type) {
+		this.obj_Type = obj_Type;
 	}
-	
-	public String getObj_image() {
-		return objimage;
+
+	public String getObj_Image() {
+		return obj_Image;
 	}
-	public void setObj_image(String obj_image) {
-		this.objimage = obj_image;
+
+	public void setObj_Image(String obj_Image) {
+		this.obj_Image = obj_Image;
 	}
-	
+
 	public Lost_Found getLost_found() {
 		return lost_found;
 	}
+
 	public void setLost_found(Lost_Found lost_found) {
 		this.lost_found = lost_found;
 	}
 
-	public UserFound getUserfound() {
-		return userfound;
-	}
-	public void setUserfound(UserFound userfound) {
-		this.userfound = userfound;
-	}
-
-	public UserLost getUserlost() {
-		return userlost;
-	}
-	public void setUserlost(UserLost userlost) {
-		this.userlost = userlost;
-	}
-
 	public String getPlace() {
-		return this.place;
+		return place;
 	}
 
 	public void setPlace(String place) {
@@ -123,9 +121,25 @@ public class Item
 		this.time = time;
 	}
 
-	@Override
+	public User getFinder() {
+		return finder;
+	}
+
+	public void setFinder(User finder) {
+		this.finder = finder;
+	}
+
+	public User getOwner() {
+		return owner;
+	}
+
+	public void setOwner(User owner) {
+		this.owner = owner;
+	}
+
 	public String toString() {
-		return "Item [id=" + id + ", name=" + name + ", description=" + description + ", type=" + type
-				+ ", obj_image=" + objimage + ", lost_found=" + lost_found + "]";
+		return "Item [id=" + id + ", name=" + name + ", description=" + description + ", obj_Type=" + obj_Type
+				+ ", obj_Image=" + obj_Image + ", lost_found=" + lost_found + ", place=" + place + ", time=" + time
+				+ ", finder=" + finder + ", owner=" + owner + "]";
 	}
 }

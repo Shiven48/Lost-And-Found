@@ -2,52 +2,36 @@ package com.app.Entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
 @Entity
 public class Credentials 
-{	
+{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long credentialsid;
+	@Column(name = "id")
+	private Long id;
 	    
 	@Column(nullable = false, unique = true)
-	@Email
+	@Email(message = "Please provide a valid email address")
+	@NotBlank(message = "Email is required")
 	private String email;
-	    
+
 	@Column(nullable = false)
+	@NotBlank(message = "Password is required")
 	private String password;
 	    
 	@OneToOne(mappedBy = "credentials")
 	@JsonBackReference
 	private User user;
-	    
+
 	public Credentials() {}
-	
-	public Credentials(Long credentialsid,
-					   @NotBlank @Email String email,
-					   @NotBlank String password, User user) 
-	{
-		super();
-		this.credentialsid = credentialsid;
+
+	public Credentials(String email, String password) {
 		this.email = email;
 		this.password = password;
-		this.user = user;
-	}
-
-	public Long getCredentialsId() {
-		return credentialsid;
-	}
-
-	public void setCredentialsId(Long credentials_id) {
-		this.credentialsid = credentials_id;
 	}
 
 	public String getEmail() {
@@ -56,6 +40,14 @@ public class Credentials
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getPassword() {
@@ -74,8 +66,8 @@ public class Credentials
 		this.user = user;
 	}
 
-	@Override
 	public String toString() {
-		return "Credentials [credentialsId=" + credentialsid + ", Email=" + email + ", Password=" + password + "]";
+		return "Credentials [id=" + id + ", email=" + email + "]";
 	}
+
 }
