@@ -9,60 +9,62 @@ import java.util.List;
 
 @Service
 public class ItemService {
-//
-//    private final ItemRepository itemRepository;
-//    ItemRepository objectRepository;
-//    UserFoundService userFoundService;
-//    // UserLostService userLostService;
-//
-//    @Autowired
-//    public ItemService(ItemRepository objectRepository, UserFoundService userFoundService, ItemRepository itemRepository) {
-//        this.objectRepository = objectRepository;
-//        this.userFoundService = userFoundService;
-//        this.itemRepository = itemRepository;
-//    }
-//
-//    public Object createItem(Item item) {
-//        if (item == null) {
-//            throw new IllegalArgumentException("Object cannot be null");
-//        }
-//        try {
-//            System.out.println(item);
-//            Item response_item = new Item();
-//            response_item.setName(item.getName());
-//            response_item.setDescription(item.getDescription());
-//            response_item.setType(item.getType());
-//            response_item.setObj_image(item.getObj_image());
-//            response_item.setPlace(item.getPlace());
-//            response_item.setTime(item.getTime());
-//            response_item.setLost_found(item.getLost_found());
-//
-//            UserFound found = item.getUserfound();
-//
-//            if (found != null) {
-//                response_item.setUserfound(userFoundService.getById(found.getUser_Id()));
-//            } else {
-//                item.setUserfound(null);
-//            }
-//            // Same conditions for the userLost
-//            return itemRepository.save(response_item);
-//        } catch (Exception e) {
-//            throw new RuntimeException("Failed to create object", e);
-//        }
-//    }
-//
-//    public Item getById(Long id) {
-//        if(id == null) {
-//            throw new IllegalArgumentException("Object id cannot be null");
-//        }
-//        try{
-//            return itemRepository.findById(id)
-//                    .orElseThrow(() -> new IllegalArgumentException("Invalid user id:" + id));
-//        } catch(Exception e) {
-//            throw new RuntimeException("Failed to retrieve object with id: "+id, e);
-//        }
-//    }
-//
+
+    private final ItemRepository itemRepository;
+    private final UserService userService;
+
+    @Autowired
+    public ItemService(ItemRepository itemRepository,UserService userService) {
+        this.itemRepository = itemRepository;
+        this.userService = userService;
+    }
+
+    public Item createItem(Item item) {
+        if (item == null) {
+            throw new IllegalArgumentException("Object cannot be null");
+        }
+        try {
+            Item resp_item = new Item();
+
+            resp_item.setName(item.getName());
+            resp_item.setDescription(item.getDescription());
+            resp_item.setCategory(item.getCategory());
+            resp_item.setPlace(item.getPlace());
+            resp_item.setTime(item.getTime());
+            resp_item.setLost_found(item.getLost_found());
+            resp_item.setObj_Image(item.getObj_Image());
+            resp_item.setTags(item.getTags());
+
+            return itemRepository.save(resp_item);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to create object", e);
+        }
+    }
+
+    public List<Item> getAllitems() {
+        try{
+            List<Item> items = itemRepository.findAll();
+            return items;
+        } catch(Exception e){
+            throw new RuntimeException("Failed to retrieve all items", e);
+        }
+    }
+
+
+    public Item getById(Long id) {
+        if(id == null) {
+            throw new IllegalArgumentException("Object id cannot be null");
+        }
+        try{
+            return itemRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid user id:" + id));
+        } catch(Exception e) {
+            throw new RuntimeException("Failed to retrieve object with id: "+id, e);
+        }
+    }
+
+
+
 //    public Item updateItem(Item item, Long id) {
 //        if(item == null) {
 //            throw new IllegalArgumentException("Object cannot be null");
@@ -112,14 +114,6 @@ public class ItemService {
 //            throw new RuntimeException("Failed to delete object with id: "+id, e);
 //        }
 //    }
-//
-//    public List<Item> getAllitems() {
-//        try{
-//            List<Item> resp_AllItems = itemRepository.findAll();
-//            return resp_AllItems;
-//        } catch(Exception e){
-//            throw new RuntimeException("Failed to retrieve all items", e);
-//        }
-//    }
+
 }
 

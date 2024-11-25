@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Item
@@ -21,7 +23,7 @@ public class Item
 	@Size(max = 3000,message = "The message should not be more than 2000 words")
 	private String description;
 	
-	private String obj_Type;
+	private String category;
 	
 	private String obj_Image;
 
@@ -41,14 +43,20 @@ public class Item
 	@JoinColumn(name = "owner_id")
 	private User owner;
 
+	@ElementCollection
+	@CollectionTable(name = "item_tags", joinColumns = @JoinColumn(name = "item_id"))
+	@Column(name = "tag")
+	private List<String> tags = new ArrayList<String>();
+
+
 	public Item() {}
 
-	public Item(String name, String description, String obj_Type,
+	public Item(String name, String description, String category,
 				String obj_Image, Lost_Found lost_found, String place,
 				LocalTime time, User finder, User owner) {
 		this.name = name;
 		this.description = description;
-		this.obj_Type = obj_Type;
+		this.category = category;
 		this.obj_Image = obj_Image;
 		this.lost_found = lost_found;
 		this.place = place;
@@ -81,12 +89,12 @@ public class Item
 		this.description = description;
 	}
 
-	public String getObj_Type() {
-		return obj_Type;
+	public String getCategory() {
+		return category;
 	}
 
-	public void setObj_Type(String obj_Type) {
-		this.obj_Type = obj_Type;
+	public void setCategory(String category) {
+		this.category = category;
 	}
 
 	public String getObj_Image() {
@@ -137,8 +145,25 @@ public class Item
 		this.owner = owner;
 	}
 
+	public List<String> getTags() {
+		return tags;
+	}
+	public void setTags(List<String> tags) {
+		this.tags = tags != null ? new ArrayList<>(tags) : new ArrayList<>();
+	}
+
+	public void addTag(String tag) {
+		if (tag != null && !tag.trim().isEmpty()) {
+			this.tags.add(tag);
+		}
+	}
+
+	public void removeTag(String tag) {
+		this.tags.remove(tag);
+	}
+
 	public String toString() {
-		return "Item [id=" + id + ", name=" + name + ", description=" + description + ", obj_Type=" + obj_Type
+		return "Item [id=" + id + ", name=" + name + ", description=" + description + ", obj_Type=" + category
 				+ ", obj_Image=" + obj_Image + ", lost_found=" + lost_found + ", place=" + place + ", time=" + time
 				+ ", finder=" + finder + ", owner=" + owner + "]";
 	}

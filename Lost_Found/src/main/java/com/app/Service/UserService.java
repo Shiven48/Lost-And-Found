@@ -3,6 +3,7 @@ package com.app.Service;
 import com.app.Entity.Credentials;
 import com.app.Entity.User;
 import com.app.Repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +18,7 @@ public class UserService {
         this.credentialService = credentialService;
     }
 
+    @Transactional
     // Endpoint to create a new user (either `UserLost` or `UserFound`).
     public User postUser(User user) {
         if(user == null){
@@ -64,6 +66,7 @@ public class UserService {
         }
     }
 
+    @Transactional
     // Endpoint to update a user by his id
     public User updateUsers(Long id, User user) {
         if(id == null){
@@ -101,6 +104,7 @@ public class UserService {
         }
     }
 
+    @Transactional
     // Endpoint to delete a user by their ID.
     public User deleteUser(Long id) {
         if(id == null){
