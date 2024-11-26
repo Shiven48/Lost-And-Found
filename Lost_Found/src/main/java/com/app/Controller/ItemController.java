@@ -1,6 +1,8 @@
 package com.app.Controller;
 
 import com.app.DTO.Item.ItemDeleteResponseDto;
+import com.app.DTO.Item.ItemDto;
+import com.app.DTO.Item.ItemResponseDto;
 import com.app.Entity.Item;
 import com.app.Service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,9 +45,9 @@ public class ItemController {
 
     // Endpoint to update an object (e.g., change its details or type).
     @PutMapping(name = "updateItem",path = "items/{id}")
-    public ResponseEntity<Item> updateItem(@RequestBody Item item, @PathVariable("id") Long id){
-        Item updated_item = itemService.updateItem(item,id);
-        return ResponseEntity.ok(updated_item);
+    public ResponseEntity<ItemResponseDto> updateItem(@RequestBody ItemDto itemDto, @PathVariable("id") Long id){
+       ItemResponseDto itemDetailsDto = itemService.updateItem(itemDto,id);
+       return ResponseEntity.ok(itemDetailsDto);
     }
 
     // Endpoint to delete an object by its ID.

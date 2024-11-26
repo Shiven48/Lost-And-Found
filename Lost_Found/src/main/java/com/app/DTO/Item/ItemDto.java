@@ -1,5 +1,6 @@
 package com.app.DTO.Item;
 
+import com.app.DTO.User.UserDto;
 import com.app.Entity.Lost_Found;
 
 import java.time.LocalTime;
@@ -17,4 +18,5 @@ public record ItemDto(
         LocalTime time,
         Long finderId,
         Long ownerId
-) {}
+) {
+}

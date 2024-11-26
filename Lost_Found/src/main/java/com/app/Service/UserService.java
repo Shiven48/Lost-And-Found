@@ -1,7 +1,9 @@
 package com.app.Service;
 
+import com.app.DTO.User.UserDto;
 import com.app.Entity.Credentials;
 import com.app.Entity.User;
+import com.app.Mapper.UserMapper;
 import com.app.Repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -61,6 +63,7 @@ public class UserService {
         try{
             return userRepository.findById(id)
                     .orElseThrow(() -> new IllegalArgumentException("Invalid user id:" + id));
+//            return UserMapper.toUserDto(user);
         } catch(Exception e){
             throw new RuntimeException("Cant fetch user by id : "+id,e);
         }
