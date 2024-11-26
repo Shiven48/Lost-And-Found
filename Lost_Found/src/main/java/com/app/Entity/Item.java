@@ -13,7 +13,7 @@ public class Item
 {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	private Long id;
 
 	@Column(nullable = false)
 	@Size(max = 20)
@@ -65,11 +65,11 @@ public class Item
 		this.owner = owner;
 	}
 
-	public int getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

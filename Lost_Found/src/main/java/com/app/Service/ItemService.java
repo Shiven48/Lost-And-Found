@@ -1,7 +1,12 @@
 package com.app.Service;
 
+import com.app.DTO.Item.ItemDeleteResponseDto;
+import com.app.DTO.Item.ItemDto;
 import com.app.Entity.Item;
+import com.app.Exception.ExceptionTypes.ResourceNotFoundException;
+import com.app.Mapper.ItemMapper;
 import com.app.Repository.ItemRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -63,6 +68,30 @@ public class ItemService {
         }
     }
 
+    public Item updateItem(Item item, Long id) {
+        return null;
+    }
+
+    @Transactional
+    public ItemDeleteResponseDto deleteItem(Long id) {
+        if(id == null) {
+            throw new IllegalArgumentException("Object id cannot be null");
+        }
+        try{
+            if(!itemRepository.existsById(id)) {
+                throw new ResourceNotFoundException("Object with id: " + id + " does not exist");
+            }
+            Item deleted_item = itemRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid user id:" + id));
+
+           String name = deleted_item.getName();
+
+            itemRepository.delete(deleted_item);
+            return ItemMapper.toItemDeleteResponseDto(deleted_item);
+        } catch(Exception e){
+            throw new RuntimeException("Failed to delete object with id: "+id, e);
+        }
+    }
 
 
 //    public Item updateItem(Item item, Long id) {
@@ -101,19 +130,7 @@ public class ItemService {
 //            throw new RuntimeException("Failed to update item with id "+id,e);
 //        }
 //    }
-//
-//    public Item deleteItem(Long id) {
-//        if(id == null) {
-//            throw new IllegalArgumentException("Object id cannot be null");
-//        }
-//        try{
-//            Item resp_item = getById(id);
-//            itemRepository.delete(resp_item);
-//            return resp_item;
-//        } catch(Exception e){
-//            throw new RuntimeException("Failed to delete object with id: "+id, e);
-//        }
-//    }
+
 
 }
 
