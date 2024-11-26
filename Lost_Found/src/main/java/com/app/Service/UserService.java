@@ -1,9 +1,8 @@
 package com.app.Service;
 
-import com.app.DTO.User.UserDto;
+import com.app.DTO.Credentials.CredentialsResponseDto;
 import com.app.Entity.Credentials;
 import com.app.Entity.User;
-import com.app.Mapper.UserMapper;
 import com.app.Repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -33,9 +32,20 @@ public class UserService {
             resp_user.setLoggedIn(user.getLoggedIn());
 
             Long cred_id = user.getCredentials().getId();
-            Credentials credential = credentialService.getCredentialsById(cred_id);
+            CredentialsResponseDto credentialsResponseDto = credentialService.getCredentialsById(cred_id);
 
-            if(credential != null){
+            if(credentialsResponseDto != null){
+                Credentials credential = new Credentials();
+                credential.setId(cred_id);
+                if(credentialsResponseDto.email() != null)
+                {
+                    credential.setEmail(credentialsResponseDto.email());
+                }
+                if(credentialsResponseDto.password() != null)
+                {
+                    credential.setPassword(credentialsResponseDto.password());
+                }
+
                 resp_user.setCredentials(credential);
                 credential.setUser(resp_user);
             }
@@ -89,17 +99,18 @@ public class UserService {
             }
 
             // Retrieving the credential by its id
-            Credentials credential = credentialService.getCredentialsById(user.getCredentials().getId());
+            CredentialsResponseDto credentialsResponseDto = credentialService.getCredentialsById(user.getCredentials().getId());
 
-            if(credential != null){
-                if(credential.getEmail() != null){
-                    credential.setEmail(credential.getEmail());
+            if(credentialsResponseDto != null){
+                Credentials new_credential = new Credentials();
+                if(credentialsResponseDto.email() != null){
+                    new_credential.setEmail(credentialsResponseDto.email());
                 }
-                if(credential.getPassword() != null){
-                    credential.setPassword(credential.getPassword());
+                if(credentialsResponseDto.password() != null){
+                    new_credential.setPassword(credentialsResponseDto.password());
                 }
-                resp_user.setCredentials(credential);
-                credential.setUser(resp_user);
+                resp_user.setCredentials(new_credential);
+                new_credential.setUser(resp_user);
             }
             return userRepository.save(resp_user);
         } catch(Exception e){

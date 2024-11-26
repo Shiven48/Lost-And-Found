@@ -3,8 +3,10 @@ package com.app.Service;
 import java.util.Collections;
 import java.util.List;
 
+import com.app.DTO.Credentials.CredentialsResponseDto;
 import com.app.Entity.User;
 import com.app.Exception.ExceptionTypes.ResourceNotFoundException;
+import com.app.Mapper.CredentialMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -22,30 +24,37 @@ public class CredentialService {
 
 	// post credentials service
 	@Transactional
-	public Credentials addCredentials(Credentials credential) {
+	public CredentialsResponseDto addCredentials(Credentials credential) {
 		try {
-			return credentialsRepository.save(credential);
+			Credentials credentials = credentialsRepository.save(credential);
+			return CredentialMapper.ToCredentialResponseDto(credentials);
 		} catch (Exception e) {
 			throw new RuntimeException("Failed to add credentials", e);
 		}
 	}
 
 	// get credentials by id service
-	public Credentials getCredentialsById(Long credential_id) {
+	public CredentialsResponseDto getCredentialsById(Long credential_id) {
 		try {
-			return credentialsRepository
+			Credentials credential = credentialsRepository
 									.findById(credential_id)
 									.orElse(new Credentials());
+			return CredentialMapper.ToCredentialResponseDto(credential);
 		} catch(Exception e) {
 			 throw new RuntimeException("Failed to retrieve user with id: "+credential_id, e);
 		}
 	}
 
 	// get all credentials service
-	public List<Credentials> getAllCredentials() {
+	public List<CredentialsResponseDto> getAllCredentials() {
 		try {
 			List<Credentials> allCredentials = credentialsRepository.findAll();
-			return allCredentials.isEmpty() ? Collections.emptyList() : allCredentials;	
+
+			List<CredentialsResponseDto> credentialDto = allCredentials.stream()
+					.map(CredentialMapper::ToCredentialResponseDto)
+					.toList();
+
+			return allCredentials.isEmpty() ? Collections.emptyList() : credentialDto;
 		} catch(Exception e) {
             throw new RuntimeException("Failed to retrieve users", e);
 		}
@@ -53,29 +62,31 @@ public class CredentialService {
 
 	// update the credential by id
 	@Transactional
-    public Credentials updateCredentialsService(Long id, Credentials credential) {
+    public CredentialsResponseDto updateCredentialsService(Long id, Credentials credential) {
 		if(id == null) {
 			throw new IllegalArgumentException("User id cannot be null");
 		}
 		try{
-			Credentials resp_credential = credentialsRepository.findById(id)
+			Credentials temp_credential = credentialsRepository.findById(id)
 					.orElseThrow(() -> new ResourceNotFoundException("Invalid user id:" + id));
+
 			if(credential != null) {
 				if(credential.getEmail() != null) {
-					resp_credential.setEmail(credential.getEmail());
+					temp_credential.setEmail(credential.getEmail());
 				}
 				if(credential.getPassword() != null) {
-					resp_credential.setPassword(credential.getPassword());
+					temp_credential.setPassword(credential.getPassword());
 				}
 			}
-			return credentialsRepository.save(resp_credential);
+
+			return CredentialMapper.ToCredentialResponseDto(credentialsRepository.save(temp_credential));
 		} catch(Exception e) {
 			throw new RuntimeException("Failed to update credentials", e);
 		}
     }
 
 	@Transactional
-	public Credentials deleteCredentialById(Long id) {
+	public CredentialsResponseDto deleteCredentialById(Long id) {
 		if(id == null) {
 			throw new IllegalArgumentException("User id cannot be null");
 		}
@@ -93,6 +104,6 @@ public class CredentialService {
 		if (credentialsRepository.existsById(id)) {
 			throw new RuntimeException("Failed to delete credential");
 		}
-		return credential;
+		return CredentialMapper.ToCredentialResponseDto(credential);
 	}
 }

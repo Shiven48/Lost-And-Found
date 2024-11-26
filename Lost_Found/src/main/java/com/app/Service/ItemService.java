@@ -3,7 +3,6 @@ package com.app.Service;
 import com.app.DTO.Item.ItemDeleteResponseDto;
 import com.app.DTO.Item.ItemDto;
 import com.app.DTO.Item.ItemResponseDto;
-import com.app.DTO.User.UserDto;
 import com.app.Entity.Item;
 import com.app.Entity.User;
 import com.app.Exception.ExceptionTypes.ResourceNotFoundException;
