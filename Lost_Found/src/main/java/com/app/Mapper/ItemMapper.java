@@ -1,56 +1,38 @@
 package com.app.Mapper;
 
 import com.app.DTO.Item.ItemDeleteResponseDto;
-import com.app.DTO.Item.ItemDto;
+import com.app.DTO.Item.ItemRequestDto;
 import com.app.DTO.Item.ItemResponseDto;
 import com.app.Entity.Item;
+import com.app.Entity.User;
+import com.app.Exception.ExceptionTypes.ResourceNotFoundException;
+import com.app.Repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
 
 @Component
 public class ItemMapper {
 
-    public static ItemDeleteResponseDto toItemDeleteResponseDto(Item item) {
+    private final UserMapper userMapper;
+    private final UserRepository userRepository;
+
+    @Autowired
+    ItemMapper(UserMapper userMapper, UserRepository userRepository) {
+        this.userMapper = userMapper;
+        this.userRepository = userRepository;
+    }
+
+    public ItemDeleteResponseDto toItemDeleteResponseDto(Item item) {
             return new ItemDeleteResponseDto(
                     item.getId(),
                     item.getName()
             );
         }
 
-    public static ItemResponseDto toItemResponseDto(Item item) {
+    public ItemResponseDto toItemResponseDto(Item item) {
         return new ItemResponseDto(
-          item.getId(),
-          item.getName(),
-          item.getDescription(),
-          item.getCategory(),
-          item.getObj_Image(),
-          item.getLost_found(),
-          item.getPlace(),
-          item.getTags(),
-          item.getTime(),
-          UserMapper.toUserDto(item.getFinder()),
-          UserMapper.toUserDto(item.getOwner())
-        );
-    }
-
-
-    public static ItemDto toItemDto(ItemResponseDto itemResponseDto) {
-            return new ItemDto(
-            itemResponseDto.id(),
-            itemResponseDto.name(),
-            itemResponseDto.description(),
-            itemResponseDto.category(),
-            itemResponseDto.objImage(),
-            itemResponseDto.lostFound(),
-            itemResponseDto.place(),
-            itemResponseDto.tags(),
-            itemResponseDto.time(),
-            itemResponseDto.finder().id(),
-            itemResponseDto.owner().id()
-         );
-    }
-
-    public static ItemDto toItemDto(Item item) {
-        return new ItemDto(
                 item.getId(),
                 item.getName(),
                 item.getDescription(),
@@ -60,9 +42,35 @@ public class ItemMapper {
                 item.getPlace(),
                 item.getTags(),
                 item.getTime(),
-                item.getFinder().getUserId(),
-                item.getOwner().getUserId()
+                userMapper.toUserDto(item.getFinder()),
+                userMapper.toUserDto(item.getOwner())
         );
+    }
+
+    public void ItemFromRequestDto(Item item, ItemRequestDto dto) {
+        item.setName(dto.name());
+        item.setDescription(dto.description());
+        item.setCategory(dto.category());
+        item.setObj_Image(dto.objImage());
+        item.setLost_found(dto.lostFound());
+        item.setPlace(dto.place());
+        item.setTime(dto.time());
+
+        if (dto.tags() != null) {
+            item.setTags(new ArrayList<>(dto.tags()));
+        }
+
+        if (dto.finderId() != null) {
+            User finder = userRepository.findById(dto.finderId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Finder not found with id: " + dto.finderId()));
+            item.setFinder(finder);
+        }
+
+        if (dto.ownerId() != null) {
+            User owner = userRepository.findById(dto.ownerId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Owner not found with id: " + dto.ownerId()));
+            item.setOwner(owner);
+        }
     }
 
 }

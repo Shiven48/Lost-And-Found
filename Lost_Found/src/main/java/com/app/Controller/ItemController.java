@@ -1,7 +1,7 @@
 package com.app.Controller;
 
 import com.app.DTO.Item.ItemDeleteResponseDto;
-import com.app.DTO.Item.ItemDto;
+import com.app.DTO.Item.ItemRequestDto;
 import com.app.DTO.Item.ItemResponseDto;
 import com.app.Entity.Item;
 import com.app.Service.ItemService;
@@ -22,30 +22,31 @@ public class ItemController {
         this.itemService = itemService;
     }
 
-    // Endpoint to create a new object (could be a lost or found object).
-    @PostMapping(name = "AddObject", path = "/items",consumes = {"Application/xml","Application/json"})
-    public ResponseEntity<Object> addItem(@RequestBody Item item){
-        Item resp_item = itemService.createItem(item);
-        return ResponseEntity.ok(resp_item);
+
+    // Endpoint to fetch a list of all objects (both lost and found).
+    @GetMapping(name="getAllItems", path = "/items")
+    public ResponseEntity<List<ItemResponseDto>> getAllItems(){
+        List<ItemResponseDto> items = itemService.getAllitems();
+        return ResponseEntity.ok(items);
     }
 
     // Endpoint to fetch an object by its ID.
     @GetMapping(name="getItem",path="/items/{id}")
-    public ResponseEntity<Item> getItemById(@PathVariable("id") Long id){
-        Item resp_item = itemService.getById(id);
-        return ResponseEntity.ok(resp_item);
+    public ResponseEntity<ItemResponseDto> getItemById(@PathVariable("id") Long id){
+        ItemResponseDto item = itemService.getById(id);
+        return ResponseEntity.ok(item);
     }
 
-    // Endpoint to fetch a list of all objects (both lost and found).
-    @GetMapping(name="getAllItems", path = "/items")
-    public ResponseEntity<List<Item>> getAllItems(){
-        List<Item> resp_items = itemService.getAllitems();
-        return ResponseEntity.ok(resp_items);
+    // Endpoint to create a new object (could be a lost or found object).
+    @PostMapping(name = "AddObject", path = "/items",consumes = {"Application/xml","Application/json"})
+    public ResponseEntity<ItemResponseDto> addItem(@RequestBody ItemRequestDto item){
+        ItemResponseDto resp_item = itemService.createItem(item);
+        return ResponseEntity.ok(resp_item);
     }
 
     // Endpoint to update an object (e.g., change its details or type).
     @PutMapping(name = "updateItem",path = "items/{id}")
-    public ResponseEntity<ItemResponseDto> updateItem(@RequestBody ItemDto itemDto, @PathVariable("id") Long id){
+    public ResponseEntity<ItemResponseDto> updateItem(@RequestBody ItemRequestDto itemDto, @PathVariable("id") Long id){
        ItemResponseDto itemDetailsDto = itemService.updateItem(itemDto,id);
        return ResponseEntity.ok(itemDetailsDto);
     }

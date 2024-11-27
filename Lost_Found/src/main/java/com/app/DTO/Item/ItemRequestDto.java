@@ -1,13 +1,11 @@
 package com.app.DTO.Item;
 
-import com.app.DTO.User.UserDto;
 import com.app.Entity.Lost_Found;
 
 import java.time.LocalTime;
 import java.util.List;
 
-public record ItemDto(
-        Long id,
+public record ItemRequestDto(
         String name,
         String description,
         String category,

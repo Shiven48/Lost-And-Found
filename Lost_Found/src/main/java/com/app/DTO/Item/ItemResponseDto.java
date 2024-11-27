@@ -5,6 +5,7 @@ import com.app.Entity.Lost_Found;
 
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 public record ItemResponseDto(
         Long id,
@@ -18,4 +19,5 @@ public record ItemResponseDto(
         LocalTime time,
         UserDto finder,
         UserDto owner
-) {}
+) {
+}

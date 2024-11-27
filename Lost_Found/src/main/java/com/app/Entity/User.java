@@ -139,6 +139,6 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User ["+"Name : "+name+","+"isLoggedIn : "+isLoggedIn+","+"credentials : "+credentials+"]";
+		return "User [id:"+userId+"Name : "+name+","+"isLoggedIn : "+isLoggedIn+","+"credentials : "+credentials+"]";
 	}
 }
