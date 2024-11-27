@@ -1,8 +1,11 @@
 package com.app.Service;
 
 import com.app.DTO.Credentials.CredentialsResponseDto;
+import com.app.DTO.User.UserRequestDto;
+import com.app.DTO.User.UserResponseDto;
 import com.app.Entity.Credentials;
 import com.app.Entity.User;
+import com.app.Mapper.UserMapper;
 import com.app.Repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -12,76 +15,59 @@ import java.util.List;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final CredentialService credentialService;
+    private final UserMapper userMapper;
 
-    public UserService(UserRepository userRepository, CredentialService credentialService) {
+    public UserService(UserRepository userRepository, UserMapper userMapper) {
         this.userRepository = userRepository;
-        this.credentialService = credentialService;
-    }
-
-    @Transactional
-    // Endpoint to create a new user (either `UserLost` or `UserFound`).
-    public User postUser(User user) {
-        if(user == null){
-            throw new IllegalArgumentException("user is null");
-        }
-        try{
-            User resp_user = new User();
-
-            resp_user.setName(user.getName());
-            resp_user.setLoggedIn(user.getLoggedIn());
-
-            Long cred_id = user.getCredentials().getId();
-            CredentialsResponseDto credentialsResponseDto = credentialService.getCredentialsById(cred_id);
-
-            if(credentialsResponseDto != null){
-                Credentials credential = new Credentials();
-                credential.setId(cred_id);
-                if(credentialsResponseDto.email() != null)
-                {
-                    credential.setEmail(credentialsResponseDto.email());
-                }
-                if(credentialsResponseDto.password() != null)
-                {
-                    credential.setPassword(credentialsResponseDto.password());
-                }
-
-                resp_user.setCredentials(credential);
-                credential.setUser(resp_user);
-            }
-
-           return userRepository.save(resp_user);
-        } catch(Exception e){
-            throw new RuntimeException("User cannot be created",e);
-        }
+        this.userMapper = userMapper;
     }
 
     // Endpoint to fetch a list of all users.
-    public List<User> userFoundAll() {
+    public List<UserResponseDto> userFoundAll() {
         try{
-            return userRepository.findAll();
+            List<User> users = userRepository.findAll();
+            return users.stream()
+                    .map(userMapper::userToUserResponseDto)
+                    .toList();
         } catch(Exception e){
             throw new RuntimeException("Cant fetch all users",e);
         }
     }
 
     // Endpoint to fetch a user by their ID.
-    public User userById(Long id){
+    public UserResponseDto userById(Long id){
         if(id == null){
             throw new IllegalArgumentException("Id cannot be null");
         }
         try{
-            return userRepository.findById(id)
+            User user =  userRepository.findById(id)
                     .orElseThrow(() -> new IllegalArgumentException("Invalid user id:" + id));
-//            return UserMapper.toUserDto(user);
+            return userMapper.userToUserResponseDto(user);
         } catch(Exception e){
             throw new RuntimeException("Cant fetch user by id : "+id,e);
         }
     }
 
+    // Endpoint to create a new user (either `UserLost` or `UserFound`).
+    @Transactional
+    public UserResponseDto postUser(UserRequestDto userRequestDto) {
+        if(userRequestDto == null){
+            throw new IllegalArgumentException("user is null");
+        }
+        try{
+            User user = new User();
+
+            User response_user = userRepository.save(userMapper.userRequestDtoToUser(user,userRequestDto));
+
+            return userMapper.userToUserResponseDto(response_user);
+        } catch(Exception e){
+            throw new RuntimeException("User cannot be created",e);
+        }
+    }
+
     @Transactional
     // Endpoint to update a user by his id
-    public User updateUsers(Long id, User user) {
+    public UserResponseDto updateUsers(Long id, User user) {
         if(id == null){
             throw new IllegalArgumentException("Id cannot be null");
         }
@@ -89,48 +75,37 @@ public class UserService {
             throw new IllegalArgumentException("user cannot be null");
         }
         try{
-            User resp_user = userById(id);
-
-            if(user.getName() != null){
-                resp_user.setName(user.getName());
+            if(!userRepository.existsById(id)){
+                throw new IllegalArgumentException("User not found");
             }
-            if(user.getLoggedIn() != null){
-                resp_user.setLoggedIn(user.getLoggedIn());
-            }
+            User resp_user = userRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid user id:" + id));
 
-            // Retrieving the credential by its id
-            CredentialsResponseDto credentialsResponseDto = credentialService.getCredentialsById(user.getCredentials().getId());
+            UserRequestDto userRequestDto = userMapper.UserToUserRequestDto(user);
 
-            if(credentialsResponseDto != null){
-                Credentials new_credential = new Credentials();
-                if(credentialsResponseDto.email() != null){
-                    new_credential.setEmail(credentialsResponseDto.email());
-                }
-                if(credentialsResponseDto.password() != null){
-                    new_credential.setPassword(credentialsResponseDto.password());
-                }
-                resp_user.setCredentials(new_credential);
-                new_credential.setUser(resp_user);
-            }
-            return userRepository.save(resp_user);
+            User final_user =  userRepository.save(userMapper.userRequestDtoToUser(resp_user, userRequestDto));
+
+            return userMapper.userToUserResponseDto(final_user);
         } catch(Exception e){
             throw new RuntimeException("Cannot update the user");
         }
     }
 
-    @Transactional
     // Endpoint to delete a user by their ID.
-    public User deleteUser(Long id) {
+    @Transactional
+    public UserResponseDto deleteUser(Long id) {
         if(id == null){
             throw new IllegalArgumentException("Id cannot be null");
         }
         try{
+            UserResponseDto response_user = null;
             User user = userRepository.findById(id)
                     .orElseThrow(() -> new IllegalArgumentException("Invalid user id:" + id));
             if(user != null){
+               response_user = userMapper.userToUserResponseDto(user);
                 userRepository.delete(user);
             }
-            return user;
+            return response_user;
         } catch(Exception e){
             throw new RuntimeException("Cannot delete the user");
         }
