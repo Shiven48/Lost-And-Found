@@ -1,3 +1,5 @@
-- change schema for the credential and make user mapped with credentials
-                          OR
-- dind another way to post userfound
+- Implement role for the validation of owner and founder
+- create userfound and userlost controller seperate for getting the items that are lost by them or found by them like api/users/id/founditems same can be used for the lostitems
+- create their specific services as well
+- Implement validation it is incomplete because it is generating error because of null tags,ownerId and founderId in items service
+
