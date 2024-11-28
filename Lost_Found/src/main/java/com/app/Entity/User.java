@@ -55,6 +55,10 @@ public class User {
 	@JsonManagedReference
 	private Credentials credentials;
 
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	private User_Role role;
+
 	public User() {}
 
 	public User(String name,Boolean isLoggedIn,Credentials credentials) {
@@ -71,11 +75,13 @@ public class User {
 		this.userId = userId;
 	}
 
+	// For founder specific route
 	public void addFoundItem(Item item) {
 		itemsFound.add(item);
 		item.setFinder(this);
 	}
 
+	// For Owner specific route
 	public void addLostItem(Item item) {
 		itemsLost.add(item);
 		item.setOwner(this);
@@ -137,8 +143,16 @@ public class User {
 		this.credentials = credentials;
 	}
 
+	public User_Role getRole() {
+		return role;
+	}
+
+	public void setRole(User_Role role) {
+		this.role = role;
+	}
+
 	@Override
 	public String toString() {
-		return "User [id:"+userId+"Name : "+name+","+"isLoggedIn : "+isLoggedIn+","+"credentials : "+credentials+"]";
+		return "User [id :"+userId+","+"Name : "+name+","+"Role : "+role+","+"isLoggedIn : "+isLoggedIn+","+"credentials : "+credentials+"]";
 	}
 }
