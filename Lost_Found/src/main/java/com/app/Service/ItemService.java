@@ -17,8 +17,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-// Error
 @Service
+@SuppressWarnings(value = "unchecked")
 public class ItemService {
 
     private final ItemRepository itemRepository;
@@ -32,22 +32,21 @@ public class ItemService {
         this.itemMapper = itemMapper1;
     }
 
-    // Can have error for the tags,founder and Owner
-//    public List<T> getAllitems() {
-//        try{
-//            List<Item> items = itemRepository.findAll();
-//            List<ItemResponseDto> response_items = items.stream()
-//                    .map(item -> {
-//                        return validate(item);
-//                    })
-//                    .toList();
-//            return response_items;
-//        } catch(Exception e){
-//            throw new RuntimeException("Failed to retrieve all items", e);
-//        }
-//    }
 
-    // Can have error for the tags,founder and Owner
+    public <T> List<T> getAllitems() {
+        try{
+            List<Item> items = itemRepository.findAll();
+            List<T> response_items = items.stream()
+                    .map(item -> {
+                        return (T) validate(item);
+                    })
+                    .toList();
+            return response_items;
+        } catch(Exception e){
+            throw new RuntimeException("Failed to retrieve all items", e);
+        }
+    }
+
     public <T>T getById(Long id) {
         if(id == null) {
             throw new IllegalArgumentException("Object id cannot be null");
@@ -122,7 +121,6 @@ public class ItemService {
         }
     }
 
-    @SuppressWarnings(value = "unchecked")
     private <T>T validate(Item item) {
         // One tag required compulsory
         item.setTags(itemMapper.addTags(item));
