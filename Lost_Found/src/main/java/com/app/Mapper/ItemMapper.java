@@ -1,16 +1,17 @@
 package com.app.Mapper;
 
-import com.app.DTO.Item.ItemDeleteResponseDto;
-import com.app.DTO.Item.ItemRequestDto;
-import com.app.DTO.Item.ItemResponseDto;
+import com.app.DTO.Item.*;
 import com.app.Entity.Item;
+import com.app.Entity.Lost_Found;
 import com.app.Entity.User;
 import com.app.Exception.ExceptionTypes.ResourceNotFoundException;
 import com.app.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class ItemMapper {
@@ -41,9 +42,7 @@ public class ItemMapper {
                 item.getLost_found(),
                 item.getPlace(),
                 item.getTags(),
-                item.getTime(),
-                userMapper.toUserDto(item.getFinder()),
-                userMapper.toUserDto(item.getOwner())
+                item.getTime()
         );
     }
 
@@ -56,9 +55,7 @@ public class ItemMapper {
         item.setPlace(dto.place());
         item.setTime(dto.time());
 
-        if (dto.tags() != null) {
-            item.setTags(new ArrayList<>(dto.tags()));
-        }
+        item.setTags(addTags(item,dto));
 
         if (dto.finderId() != null) {
             User finder = userRepository.findById(dto.finderId())
@@ -73,4 +70,69 @@ public class ItemMapper {
         }
     }
 
+    public List<String> addTags(Item item, ItemRequestDto dto) {
+        if(dto.tags() == null) {
+            List<String> tags = new ArrayList<>();
+            tags.add(dto.name());
+            return new ArrayList<>(tags);
+        } else {
+            return new ArrayList<>(dto.tags());
+        }
+    }
+
+    public List<String> addTags(Item item) {
+        if(item.getTags() == null) {
+            List<String> tags = new ArrayList<>();
+            tags.add(item.getName());
+            return new ArrayList<>(tags);
+        } else {
+            return new ArrayList<>(item.getTags());
+        }
+    }
+
+    public ItemWithoutFounder toItemWithoutFounder(Item item) {
+        return new ItemWithoutFounder(
+                item.getId(),
+                item.getName(),
+                item.getDescription(),
+                item.getCategory(),
+                item.getObj_Image(),
+                item.getLost_found(),
+                item.getPlace(),
+                item.getTags(),
+                item.getTime(),
+                userMapper.toUserDto(item.getOwner())
+        );
+    }
+
+    public ItemWithoutOwner toItemWithoutOwner(Item item){
+        return new ItemWithoutOwner(
+                item.getId(),
+                item.getName(),
+                item.getDescription(),
+                item.getCategory(),
+                item.getObj_Image(),
+                item.getLost_found(),
+                item.getPlace(),
+                item.getTags(),
+                item.getTime(),
+                userMapper.toUserDto(item.getFinder())
+        );
+    }
+
+    public Object toFullItemResponseDto(Item item) {
+        return new ItemFullResponseDto(
+                item.getId(),
+                item.getName(),
+                item.getDescription(),
+                item.getCategory(),
+                item.getObj_Image(),
+                item.getLost_found(),
+                item.getPlace(),
+                item.getTags(),
+                item.getTime(),
+                userMapper.toUserDto(item.getOwner()),
+                userMapper.toUserDto(item.getFinder())
+        );
+    }
 }

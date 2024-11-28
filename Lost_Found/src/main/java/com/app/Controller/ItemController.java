@@ -24,17 +24,16 @@ public class ItemController {
 
 
     // Endpoint to fetch a list of all objects (both lost and found).
-    @GetMapping(name="getAllItems", path = "/items")
-    public ResponseEntity<List<ItemResponseDto>> getAllItems(){
-        List<ItemResponseDto> items = itemService.getAllitems();
-        return ResponseEntity.ok(items);
-    }
+//    @GetMapping(name="getAllItems", path = "/items")
+//    public ResponseEntity<List<ItemResponseDto>> getAllItems(){
+//        List<ItemResponseDto> items = itemService.getAllitems();
+//        return ResponseEntity.ok(items);
+//    }
 
     // Endpoint to fetch an object by its ID.
     @GetMapping(name="getItem",path="/items/{id}")
-    public ResponseEntity<ItemResponseDto> getItemById(@PathVariable("id") Long id){
-        ItemResponseDto item = itemService.getById(id);
-        return ResponseEntity.ok(item);
+    public ResponseEntity getItemById(@PathVariable("id") Long id){
+        return ResponseEntity.ok(itemService.getById(id));
     }
 
     // Endpoint to create a new object (could be a lost or found object).

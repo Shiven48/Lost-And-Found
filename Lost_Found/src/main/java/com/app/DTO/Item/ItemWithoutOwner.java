@@ -2,12 +2,12 @@ package com.app.DTO.Item;
 
 import com.app.DTO.User.UserDto;
 import com.app.Entity.Lost_Found;
+import com.app.Entity.User;
 
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Optional;
 
-public record ItemResponseDto(
+public record ItemWithoutOwner(
         Long id,
         String name,
         String description,
@@ -16,6 +16,7 @@ public record ItemResponseDto(
         Lost_Found lostFound,
         String place,
         List<String> tags,
-        LocalTime time
+        LocalTime time,
+        UserDto founder
 ) {
 }

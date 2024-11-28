@@ -26,38 +26,36 @@ public class ItemService {
 
     @Autowired
     public ItemService(ItemRepository itemRepository,
-                        ItemMapper itemMapper
+                        ItemMapper itemMapper1
     ) {
         this.itemRepository = itemRepository;
-        this.itemMapper = itemMapper;
+        this.itemMapper = itemMapper1;
     }
 
     // Can have error for the tags,founder and Owner
-    public List<ItemResponseDto> getAllitems() {
-        try{
-            List<Item> items = itemRepository.findAll();
-            List<ItemResponseDto> response_items = items.stream()
-                    .map(item -> {
-                        validate(item);
-                        return itemMapper.toItemResponseDto(item);
-                    })
-                    .toList();
-            return response_items;
-        } catch(Exception e){
-            throw new RuntimeException("Failed to retrieve all items", e);
-        }
-    }
+//    public List<T> getAllitems() {
+//        try{
+//            List<Item> items = itemRepository.findAll();
+//            List<ItemResponseDto> response_items = items.stream()
+//                    .map(item -> {
+//                        return validate(item);
+//                    })
+//                    .toList();
+//            return response_items;
+//        } catch(Exception e){
+//            throw new RuntimeException("Failed to retrieve all items", e);
+//        }
+//    }
 
     // Can have error for the tags,founder and Owner
-    public ItemResponseDto getById(Long id) {
+    public <T>T getById(Long id) {
         if(id == null) {
             throw new IllegalArgumentException("Object id cannot be null");
         }
         try{
             Item item = itemRepository.findById(id)
                     .orElseThrow(() -> new IllegalArgumentException("Invalid user id:" + id));
-            validate(item);
-            return itemMapper.toItemResponseDto(item);
+            return validate(item);
         } catch(Exception e) {
             throw new RuntimeException("Failed to retrieve object with id: "+id, e);
         }
@@ -124,18 +122,28 @@ public class ItemService {
         }
     }
 
-    private void validate(Item item) {
+    @SuppressWarnings(value = "unchecked")
+    private <T>T validate(Item item) {
         // One tag required compulsory
+        item.setTags(itemMapper.addTags(item));
         if(item.getTags() != null) {
+            if(item.getFinder() != null && item.getOwner() != null) {
+                // dto with owner and finder
+                return (T) itemMapper.toFullItemResponseDto(item);
+            }
             if(item.getOwner() == null && item.getFinder() == null) {
-                // only tags
+                // dto without owner and finder
+                return (T) itemMapper.toItemResponseDto(item);
             }
             if(item.getFinder() != null){
                 //dto without owner
+                return (T) itemMapper.toItemWithoutOwner(item);
             }
             if(item.getOwner() != null){
                 //dto without finder
+                return (T) itemMapper.toItemWithoutFounder(item);
             }
         }
+        throw new IllegalArgumentException("Parameters are not set correctly");
     }
 }
