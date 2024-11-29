@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import com.app.Entity.Credentials;
 import com.app.Service.CredentialService;
 
-
-// This is for credentials
 @RequestMapping("api/")
 @RestController
 public class CredentialsController {
