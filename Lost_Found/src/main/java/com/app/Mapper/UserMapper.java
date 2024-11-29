@@ -2,10 +2,13 @@ package com.app.Mapper;
 
 import com.app.DTO.Credentials.CredentialsResponseDto;
 import com.app.DTO.User.UserDto;
+import com.app.DTO.User.UserLostItemsDto;
 import com.app.DTO.User.UserRequestDto;
 import com.app.DTO.User.UserResponseDto;
 import com.app.Entity.Credentials;
+import com.app.Entity.Item;
 import com.app.Entity.User;
+import com.app.Repository.CredentialsRepository;
 import com.app.Service.CredentialService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,35 +17,27 @@ import org.springframework.stereotype.Component;
 public class UserMapper {
 
     private final CredentialService credentialService;
+    private final CredentialsRepository credentialsRepository;
 
     @Autowired
-    public UserMapper(CredentialService credentialService) {
+    public UserMapper(CredentialService credentialService, CredentialsRepository credentialsRepository) {
         this.credentialService = credentialService;
+        this.credentialsRepository = credentialsRepository;
     }
 
     public User userRequestDtoToUser(User user, UserRequestDto userRequestDto) {
 
-        user.setName(user.getName());
-        user.setLoggedIn(user.getLoggedIn());
+        user.setName(userRequestDto.name());
+        user.setLoggedIn(userRequestDto.isLoggedIn());
 
-        Long cred_id = user.getCredentials().getId();
-        CredentialsResponseDto credentialsResponseDto = credentialService.getCredentialsById(cred_id);
+        Long cred_id = userRequestDto.credentialId();
 
-        if(credentialsResponseDto != null){
-            Credentials credential = new Credentials();
-            credential.setId(cred_id);
-            if(credentialsResponseDto.email() != null)
-            {
-                credential.setEmail(credentialsResponseDto.email());
-            }
-            if(credentialsResponseDto.password() != null)
-            {
-                credential.setPassword(credentialsResponseDto.password());
-            }
+        Credentials credential = credentialsRepository.findById(cred_id)
+                .orElseThrow(() -> new RuntimeException("Credential not found"));
 
-            user.setCredentials(credential);
-            credential.setUser(user);
-        }
+        user.setCredentials(credential);
+        credential.setUser(user);
+
         return user;
     }
 
@@ -72,4 +67,14 @@ public class UserMapper {
           user.getCredentials().getId()
         );
     }
+
+    public UserLostItemsDto toUserLostItemsDto(User user){
+        return new UserLostItemsDto(
+                user.getUserId(),
+                user.getName(),
+                user.getLoggedIn(),
+                user.getItemsLost()
+        );
+    }
+
 }

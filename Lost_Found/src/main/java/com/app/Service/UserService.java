@@ -1,11 +1,18 @@
 package com.app.Service;
 
 import com.app.DTO.Credentials.CredentialsResponseDto;
+import com.app.DTO.Item.ItemRequestDto;
+import com.app.DTO.Item.ItemResponseDto;
+import com.app.DTO.User.UserLostItemsDto;
 import com.app.DTO.User.UserRequestDto;
 import com.app.DTO.User.UserResponseDto;
 import com.app.Entity.Credentials;
+import com.app.Entity.Item;
 import com.app.Entity.User;
+import com.app.Mapper.ItemMapper;
 import com.app.Mapper.UserMapper;
+import com.app.Repository.CredentialsRepository;
+import com.app.Repository.ItemRepository;
 import com.app.Repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -16,10 +23,18 @@ import java.util.List;
 public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final ItemMapper itemMapper;
+    private final ItemRepository itemRepository;
+    private final CredentialService credentialService;
+    private final CredentialsRepository credentialsRepository;
 
-    public UserService(UserRepository userRepository, UserMapper userMapper) {
+    public UserService(UserRepository userRepository, UserMapper userMapper, ItemMapper itemMapper, ItemRepository itemRepository, CredentialService credentialService, CredentialsRepository credentialsRepository) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.itemMapper = itemMapper;
+        this.itemRepository = itemRepository;
+        this.credentialService = credentialService;
+        this.credentialsRepository = credentialsRepository;
     }
 
     // Endpoint to fetch a list of all users.
@@ -56,9 +71,8 @@ public class UserService {
         }
         try{
             User user = new User();
-
-            User response_user = userRepository.save(userMapper.userRequestDtoToUser(user,userRequestDto));
-
+            userMapper.userRequestDtoToUser(user,userRequestDto);
+            User response_user = userRepository.save(user);
             return userMapper.userToUserResponseDto(response_user);
         } catch(Exception e){
             throw new RuntimeException("User cannot be created",e);
@@ -111,4 +125,27 @@ public class UserService {
         }
     }
 
+    @Transactional
+    public UserLostItemsDto addLostItem(Long id, ItemRequestDto requestItem) {
+        if(id == null){
+            throw new IllegalArgumentException("Id cannot be null");
+        }
+        if(requestItem == null){
+            throw new IllegalArgumentException("requestItem is null");
+        }
+        try{
+            if(!userRepository.existsById(id)){
+                throw new IllegalArgumentException("User not found");
+            }
+            User user = userRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid user id:" + id));
+            Item item = new Item();
+            itemMapper.ItemFromRequestDto(item,requestItem);
+            Item resp_item = itemRepository.save(item);
+            user.addLostItem(resp_item);
+            return userMapper.toUserLostItemsDto(user);
+        } catch(Exception e){
+            throw new RuntimeException("Cannot add lost item");
+        }
+    }
 }

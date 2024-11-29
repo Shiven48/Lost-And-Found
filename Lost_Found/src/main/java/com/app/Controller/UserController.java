@@ -1,6 +1,9 @@
 package com.app.Controller;
 
+import com.app.DTO.Item.ItemRequestDto;
+import com.app.DTO.Item.ItemResponseDto;
 import com.app.DTO.User.UserDto;
+import com.app.DTO.User.UserLostItemsDto;
 import com.app.DTO.User.UserRequestDto;
 import com.app.DTO.User.UserResponseDto;
 import com.app.Entity.User;
@@ -62,12 +65,24 @@ public class UserController {
 		}
 	}
 
-
 	// Endpoint to add lost Item for the given user.
+	@PutMapping(path = "users/{id}/lostitem")
+	public ResponseEntity<UserLostItemsDto> lostItem(@PathVariable("id") Long id,
+													 @RequestBody ItemRequestDto requestItem
+	) {
+		try{
+			return ResponseEntity.ok(userService.addLostItem(id,requestItem));
+		} catch(Exception e){
+			throw new RuntimeException("Failed to add lost item for user with Id : "+id, e);
+		}
+	}
+
+
 	// Endpoint to add found Item for the given user.
 	// Endpoint to fetch all lost items for the given user.
 	// Endpoint to fet all founded items for the given user.
-
+	// Endpoint to fetch all `Object` entities that belong to a specific `UserFound`.
+	// Endpoint to fetch all `Object` entities that belong to a specific `UserLost`.
 
 }
 

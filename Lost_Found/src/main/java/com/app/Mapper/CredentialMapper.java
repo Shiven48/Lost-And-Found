@@ -10,8 +10,7 @@ public class CredentialMapper {
     public static CredentialsResponseDto ToCredentialResponseDto(Credentials credential) {
         return new CredentialsResponseDto(
                 credential.getId(),
-                credential.getEmail(),
-                credential.getPassword()
+                credential.getEmail()
         );
     }
 

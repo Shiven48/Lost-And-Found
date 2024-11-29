@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.app.DTO.Item.ItemRequestDto;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -40,9 +42,11 @@ public class User {
 	private Boolean isLoggedIn;
 
 	@OneToMany(mappedBy = "finder",cascade = CascadeType.ALL)
+	@JsonManagedReference
 	private List<Item> itemsFound = new ArrayList<Item>();
 
 	@OneToMany(mappedBy = "owner",cascade = CascadeType.ALL)
+	@JsonManagedReference
 	private List<Item> itemsLost = new ArrayList<Item>();
 
 	@OneToOne(cascade = CascadeType.ALL)
@@ -54,10 +58,6 @@ public class User {
 	)
 	@JsonManagedReference
 	private Credentials credentials;
-
-	@Enumerated(EnumType.STRING)
-	@Column(nullable = false)
-	private User_Role role;
 
 	public User() {}
 
@@ -143,16 +143,8 @@ public class User {
 		this.credentials = credentials;
 	}
 
-	public User_Role getRole() {
-		return role;
-	}
-
-	public void setRole(User_Role role) {
-		this.role = role;
-	}
-
 	@Override
 	public String toString() {
-		return "User [id :"+userId+","+"Name : "+name+","+"Role : "+role+","+"isLoggedIn : "+isLoggedIn+","+"credentials : "+credentials+"]";
+		return "User [id :"+userId+","+"Name : "+name+","+"isLoggedIn : "+isLoggedIn+","+"credentials : "+credentials+"]";
 	}
 }
