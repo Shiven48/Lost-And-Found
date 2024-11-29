@@ -1,6 +1,8 @@
 package com.app.Service;
 
 import com.app.DTO.Item.ItemDeleteResponseDto;
+import com.app.DTO.Item.ItemFoundRequestDto;
+import com.app.DTO.Item.ItemLostRequestDto;
 import com.app.DTO.Item.ItemRequestDto;
 import com.app.DTO.Item.ItemResponseDto;
 import com.app.Entity.Item;
@@ -61,13 +63,27 @@ public class ItemService {
     }
 
 
-    public ItemResponseDto createItem(ItemRequestDto itemRequestDto) {
-        if (itemRequestDto == null) {
+    public <T>T createLostItem(ItemLostRequestDto itemLostRequestDto) {
+        if (itemLostRequestDto == null) {
             throw new IllegalArgumentException("Object cannot be null");
         }
         try {
             Item item = new Item();
-            itemMapper.ItemFromRequestDto(item,itemRequestDto);
+            itemMapper.ItemLostFromRequestDto(item,itemLostRequestDto);
+            Item resp_item = itemRepository.save(item);
+            return itemMapper.toItemResponseDto(resp_item);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to create object", e);
+        }
+    }
+
+    public <T>T createFoundItem(ItemFoundRequestDto itemFoundRequestDto) {
+        if (itemFoundRequestDto == null) {
+            throw new IllegalArgumentException("Object cannot be null");
+        }
+        try {
+            Item item = new Item();
+            itemMapper.ItemFoundFromRequestDto(item,itemFoundRequestDto);
             Item resp_item = itemRepository.save(item);
 
             return itemMapper.toItemResponseDto(resp_item);

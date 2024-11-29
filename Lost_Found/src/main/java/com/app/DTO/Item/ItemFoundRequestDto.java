@@ -1,11 +1,12 @@
 package com.app.DTO.Item;
 
 import com.app.Entity.Lost_Found;
+import com.app.Interface.BaseDtoInterface;
 
 import java.time.LocalTime;
 import java.util.List;
 
-public record ItemRequestDto(
+public record ItemFoundRequestDto(
         String name,
         String description,
         String category,
@@ -14,7 +15,6 @@ public record ItemRequestDto(
         String place,
         List<String> tags,
         LocalTime time,
-        Long ownerId,
         Long finderId
-) {
+) implements BaseDtoInterface {
 }
