@@ -2,10 +2,7 @@ package com.app.Controller;
 
 import com.app.DTO.Item.ItemRequestDto;
 import com.app.DTO.Item.ItemResponseDto;
-import com.app.DTO.User.UserDto;
-import com.app.DTO.User.UserLostItemsDto;
-import com.app.DTO.User.UserRequestDto;
-import com.app.DTO.User.UserResponseDto;
+import com.app.DTO.User.*;
 import com.app.Entity.User;
 import com.app.Service.UserService;
 import org.springframework.http.HttpStatus;
@@ -77,12 +74,36 @@ public class UserController {
 		}
 	}
 
+	// Endpoint to add found Item for the given user
+	@PutMapping(path = "users/{id}/founditem")
+	public ResponseEntity<UserFoundItemsDto> foundItem(@PathVariable("id") Long id,
+													   @RequestBody ItemRequestDto requestItem
+	) {
+		try{
+			return ResponseEntity.ok(userService.addFoundItem(id,requestItem));
+		} catch(Exception e){
+			throw new RuntimeException("Failed to add lost item for user with Id : "+id, e);
+		}
+	}
 
-	// Endpoint to add found Item for the given user.
-	// Endpoint to fetch all lost items for the given user.
-	// Endpoint to fet all founded items for the given user.
-	// Endpoint to fetch all `Object` entities that belong to a specific `UserFound`.
-	// Endpoint to fetch all `Object` entities that belong to a specific `UserLost`.
+	@GetMapping(path = "users/{id}/lostitem")
+	public <T> ResponseEntity<List<T>> getLostItems(@PathVariable("id") Long id){
+		try{
+			return ResponseEntity.ok(userService.getLostItems(id));
+		}catch(Exception e){
+			throw new RuntimeException("Failed to get founded items by user with Id : "+id, e);
+		}
+	}
+
+
+	@GetMapping(path = "users/{id}/founditem")
+	public <T> ResponseEntity<List<T>> getFoundItems(@PathVariable("id") Long id){
+		try{
+			return ResponseEntity.ok(userService.getFoundItems(id));
+		}catch(Exception e){
+			throw new RuntimeException("Failed to get founded items by user with Id : "+id, e);
+		}
+	}
 
 }
 

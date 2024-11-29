@@ -3,6 +3,7 @@ package com.app.Service;
 import com.app.DTO.Credentials.CredentialsResponseDto;
 import com.app.DTO.Item.ItemRequestDto;
 import com.app.DTO.Item.ItemResponseDto;
+import com.app.DTO.User.UserFoundItemsDto;
 import com.app.DTO.User.UserLostItemsDto;
 import com.app.DTO.User.UserRequestDto;
 import com.app.DTO.User.UserResponseDto;
@@ -27,14 +28,16 @@ public class UserService {
     private final ItemRepository itemRepository;
     private final CredentialService credentialService;
     private final CredentialsRepository credentialsRepository;
+    private final ItemService itemService;
 
-    public UserService(UserRepository userRepository, UserMapper userMapper, ItemMapper itemMapper, ItemRepository itemRepository, CredentialService credentialService, CredentialsRepository credentialsRepository) {
+    public UserService(UserRepository userRepository, UserMapper userMapper, ItemMapper itemMapper, ItemRepository itemRepository, CredentialService credentialService, CredentialsRepository credentialsRepository, ItemService itemService) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.itemMapper = itemMapper;
         this.itemRepository = itemRepository;
         this.credentialService = credentialService;
         this.credentialsRepository = credentialsRepository;
+        this.itemService = itemService;
     }
 
     // Endpoint to fetch a list of all users.
@@ -146,6 +149,71 @@ public class UserService {
             return userMapper.toUserLostItemsDto(user);
         } catch(Exception e){
             throw new RuntimeException("Cannot add lost item");
+        }
+    }
+
+    public UserFoundItemsDto addFoundItem(Long id, ItemRequestDto requestItem) {
+        if(id == null){
+            throw new IllegalArgumentException("Id cannot be null");
+        }
+        if(requestItem == null){
+            throw new IllegalArgumentException("requestItem is null");
+        }
+        try{
+            if(!userRepository.existsById(id)){
+                throw new IllegalArgumentException("User not found");
+            }
+            User user = userRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid user id:" + id));
+            Item item = new Item();
+            itemMapper.ItemFromRequestDto(item,requestItem);
+            Item resp_item = itemRepository.save(item);
+            user.addFoundItem(resp_item);
+            return userMapper.toUserFoundItemsDto(user);
+        } catch(Exception e){
+            throw new RuntimeException("Cannot add lost item");
+        }
+    }
+
+    public <T> List<T> getLostItems(Long id) {
+        if(id == null){
+            throw new IllegalArgumentException("Id cannot be null");
+        }
+        try{
+            if(!userRepository.existsById(id)){
+                throw new IllegalArgumentException("User not found");
+            }
+            User user = userRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid user id:" + id));
+            List<Item> LostItems = user.getItemsLost();
+            return LostItems.stream()
+                    .map(lost -> {
+                        return (T) itemService.validate(lost);
+                    })
+                    .toList();
+        } catch(Exception e){
+            throw new RuntimeException("Cannot get lost items");
+        }
+    }
+
+    public <T> List<T> getFoundItems(Long id) {
+        if(id == null){
+            throw new IllegalArgumentException("Id cannot be null");
+        }
+        try{
+            if(!userRepository.existsById(id)){
+                throw new IllegalArgumentException("User not found");
+            }
+            User user = userRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid user id:" + id));
+            List<Item> FoundItems = user.getItemsFound();
+            return FoundItems.stream()
+                    .map(lost -> {
+                        return (T) itemService.validate(lost);
+                    })
+                    .toList();
+        } catch(Exception e){
+            throw new RuntimeException("Cannot get lost items");
         }
     }
 }
