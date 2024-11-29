@@ -121,7 +121,7 @@ public class ItemService {
         }
     }
 
-    private <T>T validate(Item item) {
+    public <T>T validate(Item item) {
         // One tag required compulsory
         item.setTags(itemMapper.addTags(item));
         if(item.getTags() != null) {

@@ -1,10 +1,7 @@
 package com.app.Mapper;
 
 import com.app.DTO.Credentials.CredentialsResponseDto;
-import com.app.DTO.User.UserDto;
-import com.app.DTO.User.UserLostItemsDto;
-import com.app.DTO.User.UserRequestDto;
-import com.app.DTO.User.UserResponseDto;
+import com.app.DTO.User.*;
 import com.app.Entity.Credentials;
 import com.app.Entity.Item;
 import com.app.Entity.User;
@@ -77,4 +74,12 @@ public class UserMapper {
         );
     }
 
+    public UserFoundItemsDto toUserFoundItemsDto(User user) {
+        return new UserFoundItemsDto(
+                user.getUserId(),
+                user.getName(),
+                user.getLoggedIn(),
+                user.getItemsFound()
+        );
+    }
 }
