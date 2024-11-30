@@ -147,14 +147,21 @@ public class ItemService {
 
     public <T> List<T> getAllFoundItems() {
         List<Item> items = itemRepository.findAll();
-        List<Item> foundItems = items.stream().filter(
-                    item -> item.getLost_found().toString().toUpperCase()
-                        .equals("FOUND")
-        ).toList();
-        return foundItems.stream().map(
-                    item -> {
+        return items.stream().filter(
+                    item -> "FOUND".equalsIgnoreCase(item.getLost_found().toString())
+                    ).map(item -> {
                         return (T) validate(item);
                     }
+        ).toList();
+    }
+
+    public <T> List<T> getAllLostItems() {
+        List<Item> items = itemRepository.findAll();
+        return items.stream().filter(
+                item -> "LOST".equalsIgnoreCase(item.getLost_found().toString())
+        ).map(item -> {
+                    return (T) validate(item);
+                }
         ).toList();
     }
 }

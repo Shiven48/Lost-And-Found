@@ -63,11 +63,12 @@ public class ItemController {
         return ResponseEntity.ok(allFetchedFoundItems);
     }
 
-
-//24. **Get Lost Objects (filter by type)**
-//        - `GET /objects/lost`
-//        - Endpoint to fetch all "lost" objects.
-
+    // Endpoint to get Found Objects
+    @GetMapping(path = "items/lost")
+    public <T> ResponseEntity<List<T>> getLostItems(){
+        List<T> allFetchedLostItems = itemService.getAllLostItems();
+        return ResponseEntity.ok(allFetchedLostItems);
+    }
 }
 
 
