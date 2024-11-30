@@ -3,7 +3,6 @@ package com.app.Controller;
 import com.app.DTO.Item.ItemDeleteResponseDto;
 import com.app.DTO.Item.ItemRequestDto;
 import com.app.DTO.Item.ItemResponseDto;
-import com.app.Entity.Item;
 import com.app.Service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -57,6 +56,18 @@ public class ItemController {
         return ResponseEntity.ok(deleted_Item);
     }
 
+    // Endpoint to get Found Objects
+    @GetMapping(path = "items/found")
+    public <T> ResponseEntity<List<T>> getFoundItems(){
+        List<T> allFetchedFoundItems = itemService.getAllFoundItems();
+        return ResponseEntity.ok(allFetchedFoundItems);
+    }
+
+
+//24. **Get Lost Objects (filter by type)**
+//        - `GET /objects/lost`
+//        - Endpoint to fetch all "lost" objects.
+
 }
 
 
@@ -72,16 +83,6 @@ public class ItemController {
 
 
 
-
-
-//        23. **Get Found Objects (filter by type)**
-//        - `GET /objects/found`
-//        - Endpoint to fetch all "found" objects.
-
-//24. **Get Lost Objects (filter by type)**
-//        - `GET /objects/lost`
-//        - Endpoint to fetch all "lost" objects.
-//
 //25. **Get Objects by UserFound**
 //        - `GET /objects/found/{userFoundId}`
 //        - Endpoint to fetch all objects associated with a specific `UserFound`.

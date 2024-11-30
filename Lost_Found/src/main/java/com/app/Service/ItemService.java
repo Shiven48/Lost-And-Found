@@ -144,4 +144,17 @@ public class ItemService {
         }
         throw new IllegalArgumentException("Parameters are not set correctly");
     }
+
+    public <T> List<T> getAllFoundItems() {
+        List<Item> items = itemRepository.findAll();
+        List<Item> foundItems = items.stream().filter(
+                    item -> item.getLost_found().toString().toUpperCase()
+                        .equals("FOUND")
+        ).toList();
+        return foundItems.stream().map(
+                    item -> {
+                        return (T) validate(item);
+                    }
+        ).toList();
+    }
 }
