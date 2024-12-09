@@ -1,9 +1,6 @@
 package com.app.Service;
 
-import com.app.DTO.Item.ItemDeleteResponseDto;
-import com.app.DTO.Item.ItemRequestDto;
-import com.app.DTO.Item.ItemResponseDto;
-import com.app.DTO.Item.ItemWithoutOwner;
+import com.app.DTO.Item.*;
 import com.app.Entity.Item;
 import com.app.Entity.User;
 import com.app.Exception.ExceptionTypes.ResourceNotFoundException;
@@ -87,10 +84,23 @@ public class ItemService {
             Item item = new Item();
             itemMapper.ItemFromWithoutOwnerDto(item,itemWithoutOwner);
             Item resp_item = itemRepository.save(item);
-            System.out.println("saved Object : "+resp_item);
             return validate(resp_item);
         } catch (Exception e) {
             throw new RuntimeException("Failed to create Lost object", e);
+        }
+    }
+
+    public <T>T creatFoundItem(ItemWithoutFounder itemWithoutFounder){
+        if(itemWithoutFounder == null) {
+            throw new IllegalArgumentException("Object cannot be null");
+        }
+        try{
+            Item item = new Item();
+            itemMapper.ItemFromWithoutFounderDto(item,itemWithoutFounder);
+            Item resp_item = itemRepository.save(item);
+            return validate(resp_item);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to create Found object", e);
         }
     }
 

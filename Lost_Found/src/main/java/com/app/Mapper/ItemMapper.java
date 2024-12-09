@@ -48,8 +48,6 @@ public class ItemMapper {
         );
     }
 
-    // change here
-    // change ItemFromRequestDto ItemFromWithoutOwnerDto to a generic type
     public void ItemFromWithoutOwnerDto(Item item, ItemWithoutOwner dto) {
         item.setName(dto.name());
         item.setDescription(dto.description());
@@ -67,6 +65,26 @@ public class ItemMapper {
             User finder = userRepository.findById(dto.founderId())
                     .orElseThrow(() -> new ResourceNotFoundException("Finder not found with id: " + dto.founderId()));
             item.setFinder(finder);
+        }
+    }
+
+    public void ItemFromWithoutFounderDto(Item item, ItemWithoutFounder itemWithoutFounder) {
+        item.setName(itemWithoutFounder.name());
+        item.setDescription(itemWithoutFounder.description());
+        item.setCategory(itemWithoutFounder.category());
+        item.setObj_Image(itemWithoutFounder.objImage());
+
+        item.setLost_found(Lost_Found.FOUND);
+
+        item.setPlace(itemWithoutFounder.place());
+        item.setTags(addTags(itemWithoutFounder));
+
+        item.setTime(itemWithoutFounder.time());
+
+        if(itemWithoutFounder.ownerId() != null) {
+            User owner = userRepository.findById(itemWithoutFounder.ownerId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Owner not found with id: " + itemWithoutFounder.ownerId()));
+            item.setOwner(owner);
         }
     }
 

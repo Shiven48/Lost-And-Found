@@ -26,17 +26,13 @@ public class UserService {
     private final UserMapper userMapper;
     private final ItemMapper itemMapper;
     private final ItemRepository itemRepository;
-    private final CredentialService credentialService;
-    private final CredentialsRepository credentialsRepository;
     private final ItemService itemService;
 
-    public UserService(UserRepository userRepository, UserMapper userMapper, ItemMapper itemMapper, ItemRepository itemRepository, CredentialService credentialService, CredentialsRepository credentialsRepository, ItemService itemService) {
+    public UserService(UserRepository userRepository, UserMapper userMapper, ItemMapper itemMapper, ItemRepository itemRepository, ItemService itemService) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.itemMapper = itemMapper;
         this.itemRepository = itemRepository;
-        this.credentialService = credentialService;
-        this.credentialsRepository = credentialsRepository;
         this.itemService = itemService;
     }
 
