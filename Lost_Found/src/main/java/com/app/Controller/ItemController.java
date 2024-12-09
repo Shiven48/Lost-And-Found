@@ -1,13 +1,14 @@
 package com.app.Controller;
 
-import com.app.DTO.Item.ItemDeleteResponseDto;
-import com.app.DTO.Item.ItemRequestDto;
-import com.app.DTO.Item.ItemResponseDto;
+import com.app.DTO.Item.*;
+import com.app.DTO.User.UserDto;
+import com.app.Entity.Lost_Found;
 import com.app.Service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalTime;
 import java.util.List;
 
 @RestController
@@ -40,6 +41,19 @@ public class ItemController {
     public ResponseEntity<ItemResponseDto> addItem(@RequestBody ItemRequestDto item){
         ItemResponseDto resp_item = itemService.createItem(item);
         return ResponseEntity.ok(resp_item);
+    }
+
+    // Endpoint to add CreateLostItem
+    @PostMapping(name="createLostItem",path = "items/lost")
+    public <T> ResponseEntity<T> addLostItem(@RequestBody ItemWithoutOwner itemWithoutOwner){
+        T item_resp = itemService.createLostItem(itemWithoutOwner);
+        return ResponseEntity.ok(item_resp);
+    }
+
+    // Endpoint to add CreateFoundItem
+    @PostMapping(name="createFoundItem")
+    public <T> ResponseEntity<T> addFoundItem(@RequestBody ItemWithoutFounder itemWithoutFounder){
+        return null;
     }
 
     // Endpoint to update an object (e.g., change its details or type).
