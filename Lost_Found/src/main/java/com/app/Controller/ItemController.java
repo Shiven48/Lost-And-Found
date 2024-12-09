@@ -51,9 +51,10 @@ public class ItemController {
     }
 
     // Endpoint to add CreateFoundItem
-    @PostMapping(name="createFoundItem")
+    @PostMapping(name="createFoundItem",path = "items/found")
     public <T> ResponseEntity<T> addFoundItem(@RequestBody ItemWithoutFounder itemWithoutFounder){
-        return null;
+        T item_resp = itemService.creatFoundItem(itemWithoutFounder);
+        return ResponseEntity.ok(item_resp);
     }
 
     // Endpoint to update an object (e.g., change its details or type).
@@ -84,24 +85,3 @@ public class ItemController {
         return ResponseEntity.ok(allFetchedLostItems);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//25. **Get Objects by UserFound**
-//        - `GET /objects/found/{userFoundId}`
-//        - Endpoint to fetch all objects associated with a specific `UserFound`.
-//
-//        26. **Get Objects by UserLost**
-//        - `GET /objects/lost/{userLostId}`
-//        - Endpoint to fetch all objects associated with a specific `UserLost`.

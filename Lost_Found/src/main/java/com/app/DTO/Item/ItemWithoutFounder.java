@@ -8,16 +8,14 @@ import java.time.LocalTime;
 import java.util.List;
 
 public record ItemWithoutFounder(
-        Long id,
         String name,
         String description,
         String category,
         String objImage,
-        Lost_Found lostFound,
         String place,
         List<String> tags,
         LocalTime time,
-        UserDto owner
+        Long ownerId
 )implements Taggable {
 
     @Override
