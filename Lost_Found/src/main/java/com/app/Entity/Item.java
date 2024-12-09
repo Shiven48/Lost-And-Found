@@ -1,5 +1,6 @@
 package com.app.Entity;
 
+import com.app.Interface.Taggable;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -10,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Item
+public class Item implements Taggable
 {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -3,9 +3,11 @@ package com.app.Service;
 import com.app.DTO.Item.ItemDeleteResponseDto;
 import com.app.DTO.Item.ItemRequestDto;
 import com.app.DTO.Item.ItemResponseDto;
+import com.app.DTO.Item.ItemWithoutOwner;
 import com.app.Entity.Item;
 import com.app.Entity.User;
 import com.app.Exception.ExceptionTypes.ResourceNotFoundException;
+import com.app.Interface.Taggable;
 import com.app.Mapper.ItemMapper;
 import com.app.Mapper.UserMapper;
 import com.app.Repository.ItemRepository;
@@ -76,6 +78,22 @@ public class ItemService {
         }
     }
 
+    // add founder id automatically
+    public <T>T createLostItem(ItemWithoutOwner itemWithoutOwner){
+        if(itemWithoutOwner == null) {
+            throw new IllegalArgumentException("Object cannot be null");
+        }
+        try{
+            Item item = new Item();
+            itemMapper.ItemFromWithoutOwnerDto(item,itemWithoutOwner);
+            Item resp_item = itemRepository.save(item);
+            System.out.println("saved Object : "+resp_item);
+            return validate(resp_item);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to create Lost object", e);
+        }
+    }
+
     public ItemResponseDto updateItem(ItemRequestDto item, Long id) {
         if(id == null){
             throw new IllegalArgumentException("Object id cannot be null");
@@ -122,8 +140,6 @@ public class ItemService {
     }
 
     public <T>T validate(Item item) {
-        // One tag required compulsory
-        item.setTags(itemMapper.addTags(item));
         if(item.getTags() != null) {
             if(item.getFinder() != null && item.getOwner() != null) {
                 // dto with owner and finder
@@ -135,11 +151,11 @@ public class ItemService {
             }
             if(item.getFinder() != null){
                 //dto without owner
-                return (T) itemMapper.toItemWithoutOwner(item);
+                return (T) itemMapper.toItemWithoutOwnerResponse(item);
             }
             if(item.getOwner() != null){
                 //dto without finder
-                return (T) itemMapper.toItemWithoutFounder(item);
+                return (T) itemMapper.toItemWithoutFounderResponse(item);
             }
         }
         throw new IllegalArgumentException("Parameters are not set correctly");
