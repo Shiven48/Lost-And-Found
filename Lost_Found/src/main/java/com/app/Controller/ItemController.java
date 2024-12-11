@@ -86,15 +86,14 @@ public class ItemController {
     }
 
     // Endpoint to get Items(Lost or Found) based on the Timestamp descending
-//    @GetMapping(path = "items/{lost_found}/desc")
-//    public <T> ResponseEntity<List<T>> getItemTypeByTimeStampDesc(@PathVariable("lost_found") String lost_found){
-//        List<T> allDescTime = itemService.getTimeDesc(lost_found);
-//        return ResponseEntity.ok(allDescTime);
-//    }
+    @GetMapping(path = "items/{lost_found}/desc")
+    public <T> ResponseEntity<List<T>> getItemTypeByTimeStampDesc(@PathVariable("lost_found") String lost_found){
+        List<T> allDescTime = itemService.getTimeDesc(lost_found);
+        return ResponseEntity.ok(allDescTime);
+    }
 
-    // Same for Found
-    // Same for AllItems
-
+    // Endpoint to get Items based on the Timestamp ascending
+    // Endpoint to get Items based on the Timestamp ascending
     // Endpoint to get LostItems based on the TimeStamp descending
     // Endpoint to get LostItem based on the Category
     // Endpoint to get LostItem based
