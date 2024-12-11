@@ -36,13 +36,6 @@ public class ItemController {
         return ResponseEntity.ok(itemService.getById(id));
     }
 
-    // Endpoint to create a new object (could be a lost or found object).
-    @PostMapping(name = "AddObject", path = "/items",consumes = {"Application/xml","Application/json"})
-    public ResponseEntity<ItemResponseDto> addItem(@RequestBody ItemRequestDto item){
-        ItemResponseDto resp_item = itemService.createItem(item);
-        return ResponseEntity.ok(resp_item);
-    }
-
     // Endpoint to add CreateLostItem
     @PostMapping(name="createLostItem",path = "items/lost")
     public <T> ResponseEntity<T> addLostItem(@RequestBody ItemWithoutOwner itemWithoutOwner){
@@ -71,17 +64,39 @@ public class ItemController {
         return ResponseEntity.ok(deleted_Item);
     }
 
-    // Endpoint to get Found Objects
+    // Endpoint to get Found Items
     @GetMapping(path = "items/found")
     public <T> ResponseEntity<List<T>> getFoundItems(){
         List<T> allFetchedFoundItems = itemService.getAllFoundItems();
         return ResponseEntity.ok(allFetchedFoundItems);
     }
 
-    // Endpoint to get Found Objects
+    // Endpoint to get Lost Items
     @GetMapping(path = "items/lost")
     public <T> ResponseEntity<List<T>> getLostItems(){
         List<T> allFetchedLostItems = itemService.getAllLostItems();
         return ResponseEntity.ok(allFetchedLostItems);
     }
+
+    // Endpoint to get Items(Lost or Found) based on the Timestamp ascending
+    @GetMapping(path = "items/{lost_found}/asc")
+    public <T> ResponseEntity<List<T>> getItemTypeByTimeStampAsc(@PathVariable("lost_found") String lost_found){
+        List<T> allAscTime = itemService.getTimeAsc(lost_found);
+        return ResponseEntity.ok(allAscTime);
+    }
+
+    // Endpoint to get Items(Lost or Found) based on the Timestamp descending
+//    @GetMapping(path = "items/{lost_found}/desc")
+//    public <T> ResponseEntity<List<T>> getItemTypeByTimeStampDesc(@PathVariable("lost_found") String lost_found){
+//        List<T> allDescTime = itemService.getTimeDesc(lost_found);
+//        return ResponseEntity.ok(allDescTime);
+//    }
+
+    // Same for Found
+    // Same for AllItems
+
+    // Endpoint to get LostItems based on the TimeStamp descending
+    // Endpoint to get LostItem based on the Category
+    // Endpoint to get LostItem based
+    // Search Functionality based on name
 }

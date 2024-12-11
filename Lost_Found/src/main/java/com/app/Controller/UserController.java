@@ -86,6 +86,7 @@ public class UserController {
 		}
 	}
 
+	// Endpoint to get all Lost items by a single user
 	@GetMapping(path = "users/{id}/lostitem")
 	public <T> ResponseEntity<List<T>> getLostItems(@PathVariable("id") Long id){
 		try{
@@ -95,7 +96,7 @@ public class UserController {
 		}
 	}
 
-
+	// Endpoint to get all found items by a single user
 	@GetMapping(path = "users/{id}/founditem")
 	public <T> ResponseEntity<List<T>> getFoundItems(@PathVariable("id") Long id){
 		try{
