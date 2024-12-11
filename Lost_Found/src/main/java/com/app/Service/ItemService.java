@@ -1,7 +1,9 @@
 package com.app.Service;
 
 import com.app.DTO.Item.*;
+import com.app.DTO.User.UserDto;
 import com.app.Entity.Item;
+import com.app.Entity.Lost_Found;
 import com.app.Entity.User;
 import com.app.Exception.ExceptionTypes.ResourceNotFoundException;
 import com.app.Interface.Taggable;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @SuppressWarnings(value = "unchecked")
@@ -25,8 +28,7 @@ public class ItemService {
 
     @Autowired
     public ItemService(ItemRepository itemRepository,
-                        ItemMapper itemMapper1
-    ) {
+                       ItemMapper itemMapper1) {
         this.itemRepository = itemRepository;
         this.itemMapper = itemMapper1;
     }
@@ -59,7 +61,8 @@ public class ItemService {
         }
     }
 
-
+    // Service to create Item (Deprecated)
+    @Deprecated
     public ItemResponseDto createItem(ItemRequestDto itemRequestDto) {
         if (itemRequestDto == null) {
             throw new IllegalArgumentException("Object cannot be null");
@@ -75,7 +78,7 @@ public class ItemService {
         }
     }
 
-    // add founder id automatically
+    @Transactional
     public <T>T createLostItem(ItemWithoutOwner itemWithoutOwner){
         if(itemWithoutOwner == null) {
             throw new IllegalArgumentException("Object cannot be null");
@@ -90,6 +93,7 @@ public class ItemService {
         }
     }
 
+    @Transactional
     public <T>T creatFoundItem(ItemWithoutFounder itemWithoutFounder){
         if(itemWithoutFounder == null) {
             throw new IllegalArgumentException("Object cannot be null");
@@ -104,6 +108,7 @@ public class ItemService {
         }
     }
 
+    @Transactional
     public ItemResponseDto updateItem(ItemRequestDto item, Long id) {
         if(id == null){
             throw new IllegalArgumentException("Object id cannot be null");
@@ -149,6 +154,7 @@ public class ItemService {
         }
     }
 
+    // Used to call different dto based on the input at runtime (Not any real validation or security aspect)
     public <T>T validate(Item item) {
         if(item.getTags() != null) {
             if(item.getFinder() != null && item.getOwner() != null) {
@@ -190,4 +196,20 @@ public class ItemService {
                 }
         ).toList();
     }
+
+    public <T> List<T> getTimeAsc(String lost_found) {
+        Lost_Found status = Lost_Found.valueOf(lost_found.toUpperCase());
+        return itemRepository.findAllByLost_FoundOrderByTimeAsc(status)
+                .stream()
+                .map(item -> ((T) validate(item)))
+                .toList();
+    }
+
+//    public <T> List<T> getTimeDesc() {
+//        List<Item> items = itemRepository.findAllByOrderByTimeDesc();
+//        return items.stream()
+//                .filter(item -> "LOST".equalsIgnoreCase(item.getLost_found().toString()))
+//                .map(item -> ((T) validate(item)))
+//                .collect(Collectors.toList());
+//    }
 }
