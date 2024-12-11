@@ -15,5 +15,7 @@ public interface ItemRepository extends JpaRepository<Item,Long> {
     @Query("SELECT i FROM Item i WHERE i.lost_found = :lostFound ORDER BY i.time ASC")
     List<Item> findAllByLost_FoundOrderByTimeAsc(@Param("lostFound") Lost_Found lost_found);
 
+    @Query("SELECT i FROM Item i WHERE i.lost_found = :lostFound Order By i.time DESC")
+    List<Item> findAllByLost_FoundOrderByTimeDesc(@Param("lostFound") Lost_Found lost_found);
 
 }

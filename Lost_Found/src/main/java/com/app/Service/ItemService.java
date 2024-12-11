@@ -205,11 +205,11 @@ public class ItemService {
                 .toList();
     }
 
-//    public <T> List<T> getTimeDesc() {
-//        List<Item> items = itemRepository.findAllByOrderByTimeDesc();
-//        return items.stream()
-//                .filter(item -> "LOST".equalsIgnoreCase(item.getLost_found().toString()))
-//                .map(item -> ((T) validate(item)))
-//                .collect(Collectors.toList());
-//    }
+    public <T> List<T> getTimeDesc(String lost_found) {
+        Lost_Found status = Lost_Found.valueOf(lost_found.toUpperCase());
+        return itemRepository.findAllByLost_FoundOrderByTimeDesc(status)
+                .stream()
+                .map(item -> ((T) validate(item)))
+                .toList();
+    }
 }
