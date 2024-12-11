@@ -212,4 +212,18 @@ public class ItemService {
                 .map(item -> ((T) validate(item)))
                 .toList();
     }
+
+    public <T> List<T> getAllTimeAsc() {
+        return itemRepository.findAllOrderByTimeAsc()
+                .stream()
+                .map(item -> ((T) validate(item)))
+                .toList();
+    }
+
+    public <T> List<T> getAllTimeDesc() {
+        return itemRepository.findAllOrderByTimeDesc()
+                .stream()
+                .map(item -> ((T) validate(item)))
+                .toList();
+    }
 }
