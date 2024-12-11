@@ -93,9 +93,20 @@ public class ItemController {
     }
 
     // Endpoint to get Items based on the Timestamp ascending
+    @GetMapping(path = "items/asc")
+    public <T> ResponseEntity<List<T>> getAllItemByTimeStampAsc(){
+        List<T> allAscTime = itemService.getAllTimeAsc();
+        return ResponseEntity.ok(allAscTime);
+    }
+
     // Endpoint to get Items based on the Timestamp ascending
-    // Endpoint to get LostItems based on the TimeStamp descending
+    @GetMapping(path = "items/desc")
+    public <T> ResponseEntity<List<T>> getAllItemByTimeStampDesc(){
+        List<T> allDescTime = itemService.getAllTimeDesc();
+        return ResponseEntity.ok(allDescTime);
+    }
+
+
     // Endpoint to get LostItem based on the Category
-    // Endpoint to get LostItem based
     // Search Functionality based on name
 }
