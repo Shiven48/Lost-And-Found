@@ -226,4 +226,13 @@ public class ItemService {
                 .map(item -> ((T) validate(item)))
                 .toList();
     }
+
+    public <T> List<T> getByCategory(String category) {
+        List<Item> retrieved_Items = itemRepository.findAllByCategory(category)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid category: " + category));
+        return retrieved_Items
+                .stream()
+                .map(item -> ((T) validate(item)))
+                .toList();
+    }
 }

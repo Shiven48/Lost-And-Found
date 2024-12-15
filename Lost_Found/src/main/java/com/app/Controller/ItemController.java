@@ -4,6 +4,7 @@ import com.app.DTO.Item.*;
 import com.app.DTO.User.UserDto;
 import com.app.Entity.Lost_Found;
 import com.app.Service.ItemService;
+import jdk.jfr.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -106,7 +107,13 @@ public class ItemController {
         return ResponseEntity.ok(allDescTime);
     }
 
+    // Endpoint to get Item based on the Category
+    @GetMapping(path="items/category/{category}")
+    public <T> ResponseEntity<List<T>> itemsByCategory(@PathVariable("category") String category){
+        List<T> allItemsCategory = itemService.getByCategory(category);
+        return ResponseEntity.ok(allItemsCategory);
+    }
 
-    // Endpoint to get LostItem based on the Category
-    // Search Functionality based on name
+
+    // Search Functionality (Dynamic inputs)
 }

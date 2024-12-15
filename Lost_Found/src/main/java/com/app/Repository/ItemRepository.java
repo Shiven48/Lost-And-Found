@@ -27,4 +27,7 @@ public interface ItemRepository extends JpaRepository<Item,Long> {
     @Query("SELECT i FROM Item i ORDER BY i.time DESC")
     List<Item> findAllOrderByTimeDesc();
 
+    @Query("SELECT i FROM Item i WHERE upper(i.category) = upper(:category)")
+    Optional<List<Item>> findAllByCategory(@Param("category") String category);
+
 }
