@@ -10,9 +10,11 @@ import com.app.Interface.Taggable;
 import com.app.Mapper.ItemMapper;
 import com.app.Mapper.UserMapper;
 import com.app.Repository.ItemRepository;
+import com.app.Repository.Specification.ItemSpecification;
 import com.app.Repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -233,6 +235,17 @@ public class ItemService {
         return retrieved_Items
                 .stream()
                 .map(item -> ((T) validate(item)))
+                .toList();
+    }
+
+    public <T> List<T> searchByNameAndCategory(SearchParamDto searchParamDto) {
+        Specification<Item> spec = Specification.where(ItemSpecification.hasCategory(searchParamDto.category()))
+                .and(ItemSpecification.hasName(searchParamDto.name()));
+
+        return itemRepository
+                .findAll(spec)
+                .stream()
+                .map((item) -> ((T) validate(item)))
                 .toList();
     }
 }

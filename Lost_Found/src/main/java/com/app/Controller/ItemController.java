@@ -2,6 +2,7 @@ package com.app.Controller;
 
 import com.app.DTO.Item.*;
 import com.app.DTO.User.UserDto;
+import com.app.Entity.Item;
 import com.app.Entity.Lost_Found;
 import com.app.Service.ItemService;
 import jdk.jfr.Category;
@@ -115,5 +116,12 @@ public class ItemController {
     }
 
 
-    // Search Functionality (Dynamic inputs)
+    // Search Functionality based on category and name
+    @PostMapping(path="items/search")
+    public <T> ResponseEntity<List<T>> itemsBySearch(
+           @RequestBody SearchParamDto searchParamDto){
+
+        List<T> items = itemService.searchByNameAndCategory(searchParamDto);
+        return ResponseEntity.ok(items);
+    }
 }

@@ -2,15 +2,18 @@ package com.app.Repository;
 
 import com.app.Entity.Item;
 import com.app.Entity.Lost_Found;
+import jakarta.persistence.NamedNativeQueries;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.lang.annotation.Native;
 import java.util.List;
 import java.util.Optional;
 
-public interface ItemRepository extends JpaRepository<Item,Long> {
+public interface ItemRepository extends JpaRepository<Item,Long>, JpaSpecificationExecutor<Item> {
 
     // Here used JPQL for the simple queries
     // Note :- Use Specification for more dynamic and complex query
@@ -29,5 +32,4 @@ public interface ItemRepository extends JpaRepository<Item,Long> {
 
     @Query("SELECT i FROM Item i WHERE upper(i.category) = upper(:category)")
     Optional<List<Item>> findAllByCategory(@Param("category") String category);
-
 }

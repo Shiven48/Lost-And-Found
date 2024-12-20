@@ -112,7 +112,6 @@ public class ItemMapper {
         }
     }
 
-    // Changed here
     public <T extends Taggable> List<String> addTags(T dto) {
         if(dto.getTags() == null) {
             List<String> tags = new ArrayList<>();
