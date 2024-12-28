@@ -1,6 +1,3 @@
 - Implement role for the validation of owner and founder
 - create their specific services as well
 - Add admin controllers
-- Change controllers like if it is a user that has lost something the lost id gets automatically added as the user id of that person
-- If no user then make controllers and dtos in such a way that if that info is not there it should dynamically adapt to it
-- Make user inputs generic with the use of interfaces
