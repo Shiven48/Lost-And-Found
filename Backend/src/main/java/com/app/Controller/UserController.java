@@ -23,13 +23,6 @@ public class UserController {
 		this.userService = userService;
 	}
 
-	// Endpoint to get all users
-	@GetMapping(path = "users",name = "foundUserAll")
-	public ResponseEntity<List<UserResponseDto>> fetchAll() {
-		List<UserResponseDto> user = userService.userFoundAll();
-		return ResponseEntity.ok(user);
-	}
-
 	// Endpoint to get user by ID
 	@GetMapping(path="users/{id}",name = "userById")
 	public ResponseEntity<UserResponseDto> fetchById(@PathVariable("id") Long id) {
@@ -51,16 +44,16 @@ public class UserController {
 		return ResponseEntity.ok(resp_user);
 	}
 
-	// Endpoint to delete a user by their ID.
-	@DeleteMapping(name="deleteuserFound",path = "/users/{id}")
-	public ResponseEntity<UserResponseDto> deleteUserFound(@PathVariable("id") Long id) {
-		try {
-			UserResponseDto user = userService.deleteUser(id);
-			return ResponseEntity.status(HttpStatus.OK).body(user);
-		} catch (Exception e) {
-			throw new RuntimeException("Failed to delete user found", e);
-		}
-	}
+//	// Endpoint to delete a user by their ID.
+//	@DeleteMapping(name="deleteuserFound",path = "/users/{id}")
+//	public ResponseEntity<UserResponseDto> deleteUserFound(@PathVariable("id") Long id) {
+//		try {
+//			UserResponseDto user = userService.deleteUser(id);
+//			return ResponseEntity.status(HttpStatus.OK).body(user);
+//		} catch (Exception e) {
+//			throw new RuntimeException("Failed to delete user found", e);
+//		}
+//	}
 
 	// Endpoint to add lost Item for the given user.
 	@PutMapping(path = "users/{id}/lostitem")
