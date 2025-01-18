@@ -1,37 +1,30 @@
-import { NavLink } from "react-router"
+import { NavLink } from "react-router-dom"
 
 const Navigation = () => {
-    return(
-        <nav className="text-white w-[40%] align-middle 
-            justify-around flex rounded-lg border border-cyan"
-        >
-        <NavLink 
-            to="/"
-            className={
-                ({isActive}) => (
-                    `w-full bg-[#abb450] text-base rounded capitalize text-center m-1 border-2 border-black font-semibold
-                    ${isActive ? `rounded text-black capitalize hover:bg-[#abb466]` : `bg-[#0e1a38] rounded-lg hover:text-[#abb466] hover:border border-[#abb466]`}
-                   
-                    `
-                )
-            }
-        >
-            Home
-        </NavLink>
-
-        <NavLink 
-            to="/items"
-            className={
-                ({isActive}) => (
-                    `w-full bg-[#abb450] text-base rounded capitalize text-center m-1 border-2 border-black font-semibold
-                    ${isActive ? `rounded text-black capitalize hover:bg-[#abb466]` : `bg-[#0e1a38] rounded-lg hover:text-[#abb466] hover:border border-[#abb466]`}
-                    `
-                )
-            }
-        >
-            Items
-        </NavLink>
+    return (
+        <nav className="text-white w-[40%] flex rounded-lg mt-2 ml-2">
+            <NavLink
+                to="/"
+                className={({ isActive }) => 
+                    isActive 
+                        ? "w-16 bg-[#abb450] text-black rounded-xl text-base capitalize text-center m-1 border-2 border-black font-semibold hover:bg-[#abb466] mr-4"
+                        : "w-16 bg-[#0e1a36] text-base rounded-xl text-center m-1 border border-[#abb466] font-semibold"
+                }
+            >
+                Home
+            </NavLink>
+            <NavLink
+                to="/items"
+                className={({ isActive }) =>
+                    isActive
+                        ? "w-16 bg-[#abb450] text-black rounded-xl text-base capitalize text-center m-1 border-2 border-black font-semibold hover:bg-[#abb466]"
+                        : "w-16 bg-[#0e1a36] text-base rounded-xl text-center m-1 border border-[#abb466] font-semibold hover:text-[#abb466]"
+                }
+            >
+                Items
+            </NavLink>
         </nav>
     )
 }
+
 export default Navigation
