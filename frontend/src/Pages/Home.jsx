@@ -9,6 +9,12 @@ const Home = () => {
         <div className=" w-screen h-screen">
             <Navigation />
             <Outlet />
+
+            <div className="w-[95%] h-[85%] rounded-2xl bg-[#858795] mx-auto opacity-85 mt-8 bg-opacity-30 backdrop-blur-md  border border-white border-opacity-20">
+                <div className=" w-[95%] h-[90%] mx-auto my-8">
+
+                </div>
+            </div>
         </div>
         </main>
     )
