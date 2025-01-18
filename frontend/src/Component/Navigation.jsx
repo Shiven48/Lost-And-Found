@@ -8,8 +8,8 @@ const Navigation = () => {
                 to="/"
                 className={({ isActive }) => 
                     isActive 
-                        ? "w-16 bg-[#abb450] text-black rounded-xl text-base capitalize text-center m-1 border-2 border-black font-semibold hover:bg-[#abb466] mr-4"
-                        : "w-16 bg-[#0e1a36] text-base rounded-xl text-center m-1 border border-[#abb466] font-semibold hover:text-[#abb466]"
+                        ? `w-20 bg-[#abb450] text-black rounded-xl text-base capitalize text-center m-1 border-2 border-black font-semibold hover:bg-[#abb466] mr-6`
+                        : "w-20 bg-[#0e1a36] text-base rounded-xl text-center m-1 border border-[#abb466] font-semibold hover:text-[#abb466]"
                 }
             >
                 Home
@@ -18,8 +18,8 @@ const Navigation = () => {
                 to="/items"
                 className={({ isActive }) =>
                     isActive
-                        ? "w-16 bg-[#abb450] text-black rounded-xl text-base capitalize text-center m-1 border-2 border-black font-semibold hover:bg-[#abb466] mr-4"
-                        : "w-16 bg-[#0e1a36] text-base rounded-xl text-center m-1 border border-[#abb466] font-semibold hover:text-[#abb466]"
+                        ? "w-20 bg-[#abb450] text-black rounded-xl text-base capitalize text-center m-1 border-2 border-black font-semibold hover:bg-[#abb466] mr-6"
+                        : "w-20 bg-[#0e1a36] text-base rounded-xl text-center m-1 border border-[#abb466] font-semibold hover:text-[#abb466]"
                 }
             >
                 Items
@@ -30,11 +30,21 @@ const Navigation = () => {
                 to="/login"
                 className={({ isActive }) =>
                     // isActive
-                        "w-16 bg-[#abb450] text-black rounded-xl text-base capitalize text-center m-1 border-2 border-black font-semibold hover:bg-[#abb466] mr-4 mt-2"
+                        "w-20 bg-[#abb450] text-black rounded-xl text-base capitalize text-center m-1 border-2 border-black font-semibold hover:bg-[#abb466] mr-4 mt-2 hover:border-gray-300"
                         // : "w-16 bg-[#0e1a36] text-base rounded-xl text-center m-1 border border-[#abb466] font-semibold hover:text-[#abb466]"
                 }
             >
                 Login
+            </NavLink>
+            <NavLink
+                to="/signup"
+                className={({ isActive }) =>
+                    // isActive
+                        "w-20 bg-[#abb450] text-black rounded-xl text-base capitalize text-center m-1 border-2 border-black font-semibold hover:bg-[#abb466] mr-4 mt-2 hover:border-gray-300"
+                        // : "w-16 bg-[#0e1a36] text-base rounded-xl text-center m-1 border border-[#abb466] font-semibold hover:text-[#abb466]"
+                }
+            >
+                Signup
             </NavLink>
         </nav>
         </div> // changed to div here
