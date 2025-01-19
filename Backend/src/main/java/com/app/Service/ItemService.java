@@ -1,25 +1,22 @@
 package com.app.Service;
 
 import com.app.DTO.Item.*;
-import com.app.DTO.User.UserDto;
 import com.app.Entity.Item;
 import com.app.Entity.Lost_Found;
-import com.app.Entity.User;
 import com.app.Exception.ExceptionTypes.ResourceNotFoundException;
-import com.app.Interface.Taggable;
 import com.app.Mapper.ItemMapper;
-import com.app.Mapper.UserMapper;
 import com.app.Repository.ItemRepository;
 import com.app.Repository.Specification.ItemSpecification;
-import com.app.Repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @SuppressWarnings(value = "unchecked")
@@ -27,24 +24,26 @@ public class ItemService {
 
     private final ItemRepository itemRepository;
     private final ItemMapper itemMapper;
+    private final PaginationAndSorting paginationAndSorting;
 
     @Autowired
     public ItemService(ItemRepository itemRepository,
-                       ItemMapper itemMapper1) {
+                       ItemMapper itemMapper1,
+                       PaginationAndSorting paginationAndSorting) {
         this.itemRepository = itemRepository;
         this.itemMapper = itemMapper1;
+        this.paginationAndSorting = paginationAndSorting;
     }
 
 
     public <T> List<T> getAllitems() {
         try{
             List<Item> items = itemRepository.findAll();
-            List<T> response_items = items.stream()
+            return items.stream()
                     .map(item -> {
                         return (T) validate(item);
                     })
                     .toList();
-            return response_items;
         } catch(Exception e){
             throw new RuntimeException("Failed to retrieve all items", e);
         }
@@ -246,6 +245,14 @@ public class ItemService {
                 .findAll(spec)
                 .stream()
                 .map((item) -> ((T) validate(item)))
+                .toList();
+    }
+
+    public <T> List<T> PaginateAndSort(int pages, int pageSize, String field, String direction) {
+        paginationAndSorting.validatePaginateAndSort(pages, pageSize, field, direction);
+        return itemRepository.findAll(PageRequest.of(pages, pageSize).withSort(Sort.by(Sort.Direction.valueOf(direction),field)))
+                .stream()
+                .map( pageItem -> ((T) validate(pageItem)))
                 .toList();
     }
 }
