@@ -57,9 +57,7 @@ public class UserController {
 
 	// Endpoint to add lost Item for the given user.
 	@PutMapping(path = "users/{id}/lostitem")
-	public ResponseEntity<UserLostItemsDto> lostItem(@PathVariable("id") Long id,
-													 @RequestBody ItemRequestDto requestItem
-	) {
+	public ResponseEntity<UserLostItemsDto> lostItem(@PathVariable("id") Long id, @RequestBody ItemRequestDto requestItem) {
 		try{
 			return ResponseEntity.ok(userService.addLostItem(id,requestItem));
 		} catch(Exception e){
@@ -69,9 +67,7 @@ public class UserController {
 
 	// Endpoint to add found Item for the given user
 	@PutMapping(path = "users/{id}/founditem")
-	public ResponseEntity<UserFoundItemsDto> foundItem(@PathVariable("id") Long id,
-													   @RequestBody ItemRequestDto requestItem
-	) {
+	public ResponseEntity<UserFoundItemsDto> foundItem(@PathVariable("id") Long id, @RequestBody ItemRequestDto requestItem) {
 		try{
 			return ResponseEntity.ok(userService.addFoundItem(id,requestItem));
 		} catch(Exception e){

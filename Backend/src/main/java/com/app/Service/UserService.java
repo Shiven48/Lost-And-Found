@@ -48,6 +48,50 @@ public class UserService {
         }
     }
 
+    // Fetch Lost items by a specific user
+    public <T> List<T> getLostItems(Long id) {
+        if(id == null){
+            throw new IllegalArgumentException("Id cannot be null");
+        }
+        try{
+            if(!userRepository.existsById(id)){
+                throw new IllegalArgumentException("User not found");
+            }
+            User user = userRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid user id:" + id));
+            List<Item> LostItems = user.getItemsLost();
+            return LostItems.stream()
+                    .map(lost -> {
+                        return (T) itemService.validate(lost);
+                    })
+                    .toList();
+        } catch(Exception e){
+            throw new RuntimeException("Cannot get lost items");
+        }
+    }
+
+    // Fetch Found items by a specific user
+    public <T> List<T> getFoundItems(Long id) {
+        if(id == null){
+            throw new IllegalArgumentException("Id cannot be null");
+        }
+        try{
+            if(!userRepository.existsById(id)){
+                throw new IllegalArgumentException("User not found");
+            }
+            User user = userRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid user id:" + id));
+            List<Item> FoundItems = user.getItemsFound();
+            return FoundItems.stream()
+                    .map(lost -> {
+                        return (T) itemService.validate(lost);
+                    })
+                    .toList();
+        } catch(Exception e){
+            throw new RuntimeException("Cannot get lost items");
+        }
+    }
+
     // Endpoint to fetch a user by their ID.
     public UserResponseDto userById(Long id){
         if(id == null){
@@ -78,8 +122,8 @@ public class UserService {
         }
     }
 
-    @Transactional
     // Endpoint to update a user by his id
+    @Transactional
     public UserResponseDto updateUsers(Long id, User user) {
         if(id == null){
             throw new IllegalArgumentException("Id cannot be null");
@@ -88,11 +132,7 @@ public class UserService {
             throw new IllegalArgumentException("user cannot be null");
         }
         try{
-            if(!userRepository.existsById(id)){
-                throw new IllegalArgumentException("User not found");
-            }
-            User resp_user = userRepository.findById(id)
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid user id:" + id));
+            User resp_user = helperForFetchUser(id);
 
             UserRequestDto userRequestDto = userMapper.UserToUserRequestDto(user);
 
@@ -124,6 +164,7 @@ public class UserService {
 //        }
 //    }
 
+    // For Adding Lost Item for a specific user
     @Transactional
     public UserLostItemsDto addLostItem(Long id, ItemRequestDto requestItem) {
         if(id == null){
@@ -133,11 +174,7 @@ public class UserService {
             throw new IllegalArgumentException("requestItem is null");
         }
         try{
-            if(!userRepository.existsById(id)){
-                throw new IllegalArgumentException("User not found");
-            }
-            User user = userRepository.findById(id)
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid user id:" + id));
+            User user = helperForFetchUser(id);
             Item item = new Item();
             itemMapper.ItemFromRequestDto(item,requestItem);
             Item resp_item = itemRepository.save(item);
@@ -148,6 +185,8 @@ public class UserService {
         }
     }
 
+    // For Adding Found Item for a specific user
+    @Transactional
     public UserFoundItemsDto addFoundItem(Long id, ItemRequestDto requestItem) {
         if(id == null){
             throw new IllegalArgumentException("Id cannot be null");
@@ -156,11 +195,7 @@ public class UserService {
             throw new IllegalArgumentException("requestItem is null");
         }
         try{
-            if(!userRepository.existsById(id)){
-                throw new IllegalArgumentException("User not found");
-            }
-            User user = userRepository.findById(id)
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid user id:" + id));
+            User user = helperForFetchUser(id);
             Item item = new Item();
             itemMapper.ItemFromRequestDto(item,requestItem);
             Item resp_item = itemRepository.save(item);
@@ -171,45 +206,12 @@ public class UserService {
         }
     }
 
-    public <T> List<T> getLostItems(Long id) {
-        if(id == null){
-            throw new IllegalArgumentException("Id cannot be null");
+    // To reduce redundancy from addLostItem, addFoundItem, updateUsers methods
+    private User helperForFetchUser(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new IllegalArgumentException("User not found");
         }
-        try{
-            if(!userRepository.existsById(id)){
-                throw new IllegalArgumentException("User not found");
-            }
-            User user = userRepository.findById(id)
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid user id:" + id));
-            List<Item> LostItems = user.getItemsLost();
-            return LostItems.stream()
-                    .map(lost -> {
-                        return (T) itemService.validate(lost);
-                    })
-                    .toList();
-        } catch(Exception e){
-            throw new RuntimeException("Cannot get lost items");
-        }
-    }
-
-    public <T> List<T> getFoundItems(Long id) {
-        if(id == null){
-            throw new IllegalArgumentException("Id cannot be null");
-        }
-        try{
-            if(!userRepository.existsById(id)){
-                throw new IllegalArgumentException("User not found");
-            }
-            User user = userRepository.findById(id)
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid user id:" + id));
-            List<Item> FoundItems = user.getItemsFound();
-            return FoundItems.stream()
-                    .map(lost -> {
-                        return (T) itemService.validate(lost);
-                    })
-                    .toList();
-        } catch(Exception e){
-            throw new RuntimeException("Cannot get lost items");
-        }
+        return userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid user id:" + id));
     }
 }

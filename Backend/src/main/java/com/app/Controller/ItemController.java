@@ -34,7 +34,7 @@ public class ItemController {
 
     // Endpoint to fetch an object by its ID.
     @GetMapping(name="getItem",path="/items/{id}")
-    public ResponseEntity getItemById(@PathVariable("id") Long id){
+    public <T>ResponseEntity<T> getItemById(@PathVariable("id") Long id){
         return ResponseEntity.ok(itemService.getById(id));
     }
 

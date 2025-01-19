@@ -1,9 +1,19 @@
 import { NavLink } from "react-router-dom"
+import LFLogo from "../assets/svg/LFLogo.svg"
 
 const Navigation = () => {
     return (
         <div className="items-center flex justify-between relative">
-        <nav className="text-white w-[30%] flex rounded-3xl mt-2 ml-2 border border-white pl-2 bg-gray-900">
+            <div className="flex items-center w-10 h-10 absolute bg-white rounded-3xl justify-center m-2 mt-6 border border-white">
+                <a href="/">
+                    <img 
+                        src={LFLogo} 
+                        alt="Lost_Found_Logo"
+                        className="w-10 h-10" 
+                />
+                </a>
+            </div>
+        <nav className="text-white w-[30%] flex rounded-3xl mt-2 border border-white pl-2 bg-gray-900 ml-auto mr-16">
             <NavLink
                 to="/"
                 className={({ isActive }) => 

@@ -2,7 +2,6 @@ package com.app.Service;
 
 import com.app.DTO.User.UserResponseDto;
 import com.app.Entity.User;
-import com.app.Interface.AdminRepository;
 import com.app.Mapper.UserMapper;
 import com.app.Repository.UserRepository;
 import jakarta.transaction.Transactional;
