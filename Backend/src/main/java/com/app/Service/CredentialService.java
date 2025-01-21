@@ -22,29 +22,6 @@ public class CredentialService {
 		this.credentialsRepository = credentialsRepository;
 	}
 
-	// post credentials service
-	@Transactional
-	public CredentialsResponseDto addCredentials(Credentials credential) {
-		try {
-			Credentials credentials = credentialsRepository.save(credential);
-			return CredentialMapper.ToCredentialResponseDto(credentials);
-		} catch (Exception e) {
-			throw new RuntimeException("Failed to add credentials", e);
-		}
-	}
-
-	// get credentials by id service
-	public CredentialsResponseDto getCredentialsById(Long credential_id) {
-		try {
-			Credentials credential = credentialsRepository
-									.findById(credential_id)
-									.orElse(new Credentials());
-			return CredentialMapper.ToCredentialResponseDto(credential);
-		} catch(Exception e) {
-			 throw new RuntimeException("Failed to retrieve user with id: "+credential_id, e);
-		}
-	}
-
 	// get all credentials service
 	public List<CredentialsResponseDto> getAllCredentials() {
 		try {
@@ -56,7 +33,30 @@ public class CredentialService {
 
 			return allCredentials.isEmpty() ? Collections.emptyList() : credentialDto;
 		} catch(Exception e) {
-            throw new RuntimeException("Failed to retrieve users", e);
+			throw new RuntimeException("Failed to retrieve users", e);
+		}
+	}
+
+	// get credentials by id service
+	public CredentialsResponseDto getCredentialsById(Long credential_id) {
+		try {
+			Credentials credential = credentialsRepository
+					.findById(credential_id)
+					.orElse(new Credentials());
+			return CredentialMapper.ToCredentialResponseDto(credential);
+		} catch(Exception e) {
+			throw new RuntimeException("Failed to retrieve user with id: "+credential_id, e);
+		}
+	}
+
+	// post credentials service
+	@Transactional
+	public CredentialsResponseDto addCredentials(Credentials credential) {
+		try {
+			Credentials credentials = credentialsRepository.save(credential);
+			return CredentialMapper.ToCredentialResponseDto(credentials);
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to add credentials", e);
 		}
 	}
 

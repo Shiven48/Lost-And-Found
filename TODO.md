@@ -1,3 +1,6 @@
+- connect authentication with the database to get user creds.
+- Secure Endpoints properly
+- Implement JWT for security
 - Implement role for the validation of owner and founder
 - create their specific services as well
-- Add admin controllers
+- Add admin controllers 

@@ -13,7 +13,7 @@ import java.util.List;
 
 
 @SuppressWarnings("All")
-@RequestMapping(value = "api/")
+@RequestMapping(value = "/api/users")
 @RestController
 public class UserController {
 
@@ -24,21 +24,21 @@ public class UserController {
 	}
 
 	// Endpoint to get user by ID
-	@GetMapping(path="users/{id}",name = "userById")
+	@GetMapping(path="/{id}",name = "userById")
 	public ResponseEntity<UserResponseDto> fetchById(@PathVariable("id") Long id) {
 		UserResponseDto user = userService.userById(id);
 		return ResponseEntity.ok(user);
 	}
 
 	// Endpoint to create a new user (either `UserLost` or `UserFound`).
-	@PostMapping(consumes = {"application/json","application/xml"},path = "/users")
+	@PostMapping(consumes = {"application/json","application/xml"},path = "")
 	public ResponseEntity<UserResponseDto> postUserFound(@RequestBody UserRequestDto user) {
 		UserResponseDto resp_user= userService.postUser(user);
 		return ResponseEntity.status(HttpStatus.CREATED).body(resp_user);
 	}
 
 	// Endpoint to update user details.
-	@PutMapping(name="updateUser",path = "users/{id}")
+	@PutMapping(name="updateUser",path = "/{id}")
 	public ResponseEntity<UserResponseDto> updateUser(@PathVariable("id") Long id, @RequestBody User user){
 		UserResponseDto resp_user = userService.updateUsers(id,user);
 		return ResponseEntity.ok(resp_user);
@@ -56,7 +56,7 @@ public class UserController {
 //	}
 
 	// Endpoint to add lost Item for the given user.
-	@PutMapping(path = "users/{id}/lostitem")
+	@PutMapping(path = "/{id}/lostitem")
 	public ResponseEntity<UserLostItemsDto> lostItem(@PathVariable("id") Long id, @RequestBody ItemRequestDto requestItem) {
 		try{
 			return ResponseEntity.ok(userService.addLostItem(id,requestItem));
@@ -66,7 +66,7 @@ public class UserController {
 	}
 
 	// Endpoint to add found Item for the given user
-	@PutMapping(path = "users/{id}/founditem")
+	@PutMapping(path = "/{id}/founditem")
 	public ResponseEntity<UserFoundItemsDto> foundItem(@PathVariable("id") Long id, @RequestBody ItemRequestDto requestItem) {
 		try{
 			return ResponseEntity.ok(userService.addFoundItem(id,requestItem));
@@ -76,7 +76,7 @@ public class UserController {
 	}
 
 	// Endpoint to get all Lost items by a single user
-	@GetMapping(path = "users/{id}/lostitem")
+	@GetMapping(path = "/{id}/lostitem")
 	public <T> ResponseEntity<List<T>> getLostItems(@PathVariable("id") Long id){
 		try{
 			return ResponseEntity.ok(userService.getLostItems(id));
@@ -86,7 +86,7 @@ public class UserController {
 	}
 
 	// Endpoint to get all found items by a single user
-	@GetMapping(path = "users/{id}/founditem")
+	@GetMapping(path = "/{id}/founditem")
 	public <T> ResponseEntity<List<T>> getFoundItems(@PathVariable("id") Long id){
 		try{
 			return ResponseEntity.ok(userService.getFoundItems(id));
