@@ -145,24 +145,24 @@ public class UserService {
     }
 
     // Endpoint to delete a user by their ID.
-//    @Transactional
-//    public UserResponseDto deleteUser(Long id) {
-//        if(id == null){
-//            throw new IllegalArgumentException("Id cannot be null");
-//        }
-//        try{
-//            UserResponseDto response_user = null;
-//            User user = userRepository.findById(id)
-//                    .orElseThrow(() -> new IllegalArgumentException("Invalid user id:" + id));
-//            if(user != null){
-//               response_user = userMapper.userToUserResponseDto(user);
-//                userRepository.delete(user);
-//            }
-//            return response_user;
-//        } catch(Exception e){
-//            throw new RuntimeException("Cannot delete the user");
-//        }
-//    }
+    @Transactional
+    public UserResponseDto deleteUser(Long id) {
+        if(id == null){
+            throw new IllegalArgumentException("Id cannot be null");
+        }
+        try{
+            UserResponseDto response_user = null;
+            User user = userRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid user id:" + id));
+            if(user != null){
+               response_user = userMapper.userToUserResponseDto(user);
+                userRepository.delete(user);
+            }
+            return response_user;
+        } catch(Exception e){
+            throw new RuntimeException("Cannot delete the user");
+        }
+    }
 
     // For Adding Lost Item for a specific user
     @Transactional
