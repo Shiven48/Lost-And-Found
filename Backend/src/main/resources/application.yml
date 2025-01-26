@@ -3,18 +3,23 @@ spring:
     name: Lost_And_Found
 
   datasource:
-    url: jdbc:mysql://localhost:3306/lost_and_found
+    url: jdbc:mysql://localhost:3306/lost_and_found_db?useSSL=false&serverTimezone=UTC
     username: root
     password: Shiven@123
-    dbcp2:
-      driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: false
-    database: mysql
     database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: create
+    show-sql: false
+
+  h2:
+    console:
+      enabled: false
+      path: /h2-console
+      settings:
+        web-allow-others: false
+
+server:
+  port: 8080
