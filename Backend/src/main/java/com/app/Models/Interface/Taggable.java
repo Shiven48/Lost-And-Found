@@ -1,4 +1,4 @@
-package com.app.Entity.Interface;
+package com.app.Models.Interface;
 
 import java.util.List;
 
