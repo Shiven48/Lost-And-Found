@@ -20,6 +20,14 @@ public abstract class BaseAudit extends BaseEntity implements Serializable {
     @Column(nullable = false)
     protected LocalDateTime lastModified;
 
+    public BaseAudit(Long id) {
+        super(id);
+    }
+
+    public BaseAudit(){
+        super();
+    }
+
     @Override
     public boolean equals(Object o){
         if(this == o) return true;
