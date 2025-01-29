@@ -2,12 +2,12 @@ package com.app.Controller;
 
 import java.util.List;
 
-import com.app.DTO.Credentials.CredentialsResponseDto;
+import com.app.Models.DTO.Credentials.CredentialsResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.app.Entity.Credentials;
+import com.app.Models.Entities.Credentials;
 import com.app.Service.CredentialService;
 
 @RequestMapping("/api/credentials")
@@ -21,11 +21,11 @@ public class CredentialsController {
 	}
 	
 	// sign in (No security added yet)
-	@PostMapping(path="",name = "PostCredentials",consumes = {"application/json","application/xml"})
-	public ResponseEntity<CredentialsResponseDto> postCredentials(@RequestBody Credentials credential) {
-		CredentialsResponseDto response_credential = credentialService.addCredentials(credential);
-		return ResponseEntity.status(HttpStatus.CREATED).body(response_credential);
-	}
+//	@PostMapping(path="",name = "PostCredentials",consumes = {"application/json","application/xml"})
+//	public ResponseEntity<CredentialsResponseDto> postCredentials(@Valid @RequestBody CredentialsRequestDto credential) {
+//		CredentialsResponseDto response_credential = credentialService.addCredentials(credential);
+//		return ResponseEntity.status(HttpStatus.CREATED).body(response_credential);
+//	}
 
 	// log in (No security added yet)
 	@GetMapping(path="/{id}",name = "GetCredentials")
@@ -48,10 +48,4 @@ public class CredentialsController {
 		return ResponseEntity.status(HttpStatus.OK).body(updated_credential);
 	}
 
-	// Endpoint to delete a credential
-//	@DeleteMapping(name="deleteCredential",path="credentials/{id}")
-//	public ResponseEntity<CredentialsResponseDto> deleteCredentials(@PathVariable("id") Long id) {
-//		CredentialsResponseDto deleted_credential = credentialService.deleteCredentialById(id);
-//		return ResponseEntity.status(HttpStatus.OK).body(deleted_credential);
-//	}
 }
