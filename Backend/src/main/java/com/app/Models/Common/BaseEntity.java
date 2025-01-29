@@ -9,6 +9,8 @@ import java.util.Objects;
 public abstract class BaseEntity implements Serializable {
     @Id
     @Column
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name="id_seq",sequenceName = "id_seq",initialValue = 100,allocationSize = 5)
     protected Long id;
 
     public BaseEntity(Long id) {}
