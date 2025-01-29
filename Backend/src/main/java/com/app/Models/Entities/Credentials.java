@@ -1,26 +1,43 @@
-package com.app.Entity.Models;
+package com.app.Models.Entities;
 
-import com.app.Entity.Common.BaseAudit;
+import com.app.Models.Common.BaseAudit;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "CREDENTIALS_TABLE")
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class Credentials extends BaseAudit
+public class Credentials extends BaseAudit
 {
+	@Column
+	protected String name;
+
 	@Column(nullable = false, unique = true)
-	private String email;
+	protected String email;
 
 	@Column(nullable = false)
-	private String password;
+	protected String password;
 
 	@Column
-	private String roles;
+	protected String roles;
 
-	public Credentials() {}
+	public Credentials() {
+		super();
+	}
 
-	public Credentials(String email, String password) {
+	public Credentials(Long id){
+		super(id);
+	}
+
+	public Credentials(String email, String password, String name, String roles) {
 		this.email = email;
+		this.password = password;
+		this.name = name;
+		this.roles = roles;
+	}
+
+	public Credentials(Long id, String email, String password) {
+        super(id);
+        this.email = email;
 		this.password = password;
 	}
 
@@ -48,8 +65,28 @@ public abstract class Credentials extends BaseAudit
 		this.roles = roles;
 	}
 
-	public String toString() {
-		return "Credentials [id=" + id + ", email=" + email + "]";
+	public String getName() {
+		return name;
 	}
 
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Long getId(){
+		return super.id;
+	}
+
+	@Override
+	public String toString() {
+		return "Credentials{" +
+				"name='" + name + '\'' +
+				", email='" + email + '\'' +
+				", password='" + password + '\'' +
+				", roles='" + roles + '\'' +
+				", registrationDate=" + registrationDate +
+				", lastModified=" + lastModified +
+				", id=" + id +
+				'}';
+	}
 }

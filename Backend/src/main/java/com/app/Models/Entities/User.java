@@ -1,22 +1,29 @@
-package com.app.Entity.Models;
+package com.app.Models.Entities;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.app.Models.Common.BaseAudit;
+import com.app.Models.Enums.Lost_Found;
+import com.app.Models.Interface.UserType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "USER_TABLE")
-public class User extends Credentials
+public class User extends BaseAudit implements UserType
 {
-	@Column
-	private String name;
-
 	@JsonProperty("loggedIn")
 	@Column(nullable = false)
 	private Boolean isLoggedIn;
+
+	@Column
+	private Lost_Found lost_found;
+
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "Credentials_id", referencedColumnName = "id")
+	private Credentials credentials;
 
 	@OneToMany(mappedBy = "finder",cascade = CascadeType.ALL)
 	@JsonManagedReference
@@ -28,9 +35,16 @@ public class User extends Credentials
 
 	public User() {}
 
-	public User(String name,Boolean isLoggedIn) {
-		this.name = name;
+	public User(Boolean isLoggedIn) {
 		this.isLoggedIn = isLoggedIn;
+	}
+
+	public Long getId(){
+		return super.id;
+	}
+
+	public void setId(Long id){
+		super.id = id;
 	}
 
 	// For founder specific route
@@ -43,14 +57,6 @@ public class User extends Credentials
 	public void addLostItem(Item item) {
 		itemsLost.add(item);
 		item.setOwner(this);
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public Boolean getLoggedIn() {
@@ -77,12 +83,33 @@ public class User extends Credentials
 		this.itemsLost = itemsLost;
 	}
 
+	public Lost_Found getLost_found() {
+		return lost_found;
+	}
+
+	public void setLost_found(Lost_Found lost_found) {
+		this.lost_found = lost_found;
+	}
+
+	public Credentials getCredentials() {
+		return credentials;
+	}
+
+	public void setCredentials(Credentials credentials) {
+		this.credentials = credentials;
+	}
+
 	@Override
 	public String toString() {
-		return "User ["+
-				"Name : " + name+"," +
-				"isLoggedIn : "+isLoggedIn +
-				super.toString() +
-				"]";
+		return "User{" +
+				"isLoggedIn=" + isLoggedIn +
+				", lost_found=" + lost_found +
+				", credentials=" + credentials +
+				", itemsFound=" + itemsFound +
+				", itemsLost=" + itemsLost +
+				", registrationDate=" + registrationDate +
+				", lastModified=" + lastModified +
+				", id=" + id +
+				'}';
 	}
 }
