@@ -1,9 +1,9 @@
 package com.app.Service;
 
-import com.app.DTO.Admin.AdminResponseDto;
-import com.app.DTO.Item.ItemDeleteResponseDto;
-import com.app.DTO.User.UserResponseDto;
-import com.app.Mapper.AdminMapper;
+import com.app.Models.DTO.Admin.AdminResponseDto;
+import com.app.Models.DTO.Item.ItemDeleteResponseDto;
+import com.app.Models.DTO.User.UserResponseDto;
+import com.app.Models.Mapper.AdminMapper;
 import com.app.Repository.AdminRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -36,7 +36,7 @@ public class AdminService {
     }
 
     public List<UserResponseDto> userFoundAll(){
-        return userService.userFoundAll();
+        return userService.userAll();
     }
 
     public List<AdminResponseDto> fetchAllAdmins() {

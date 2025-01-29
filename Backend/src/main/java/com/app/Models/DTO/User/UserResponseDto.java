@@ -1,13 +1,8 @@
-package com.app.Entity.DTO.User;
-
-import com.app.Entity.DTO.Credentials.CredentialsResponseDto;
+package com.app.Models.DTO.User;
 
 public record UserResponseDto(
-//        Long userId,
+        Long userId,
         String name,
-        Boolean isLoggedIn,
-//        LocalDateTime registrationDate,
-//        LocalDateTime lastModified,
-        CredentialsResponseDto credentials
+        Boolean isLoggedIn
 ) {
 }

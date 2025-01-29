@@ -1,5 +1,6 @@
 package com.app.Models.Common;
 
+import com.app.Models.Interface.BaseAuditInterface;
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import org.hibernate.annotations.CreationTimestamp;
@@ -10,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @MappedSuperclass
-public abstract class BaseAudit extends BaseEntity implements Serializable {
+public abstract class BaseAudit extends BaseEntity implements Serializable, BaseAuditInterface {
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)

@@ -1,19 +1,26 @@
 package com.app.Models.DTO.Admin;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 public record AdminRequestDto(
+
+        @Email(message = "Please provide a valid email address",
+                regexp = "^(?=(.*[A-Z]))(?=(.*\\d))(?=(.*[\\W_]))[A-Za-z\\d\\W_]{8,25}@gmail\\.com$\n")
         @NotBlank(message = "Email is required")
-        @Email(message = "Invalid email format")
         String email,
 
         @NotBlank(message = "Password is required")
         @Size(min = 8, max = 64, message = "Password must be between 8 and 64 characters")
         String password,
 
-        @Pattern(regexp = "^ROLE_ADMIN$", message = "Role must be ROLE_ADMIN")
-        String role
+        @Pattern(regexp = "^ROLE_[A-Z]+$",message = "Role must start with 'ROLE_' followed by uppercase letters.")
+        String roles,
+
+        @NotBlank(message = "Name is required")
+        @Size(min=2, max = 25, message = "Name must be less than 25 characters")
+        String name,
+
+        @NotNull(message = "isLoggedIn is required")
+        Boolean isLoggedIn
+
 ) { }

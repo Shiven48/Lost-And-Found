@@ -1,8 +1,8 @@
-package com.app.Entity.DTO.Admin;
+package com.app.Models.DTO.Admin;
 
 public record AdminResponseDto(
-//        Long adminId,
-        String email,
-        String role
+        Long userId,
+        String name,
+        Boolean isLoggedIn
 ) {
 }
