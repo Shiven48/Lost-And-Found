@@ -1,34 +1,56 @@
-package com.app.Entity.Models;
+package com.app.Models.Entities;
 
+import com.app.Models.Common.BaseAudit;
+import com.app.Models.Interface.UserType;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "ADMIN_TABLE")
-public class Admin extends Credentials
+public class Admin extends BaseAudit implements UserType
 {
-	@Column
-	@NotNull
-	private String name;
+	@JsonProperty("loggedIn")
+	@Column(nullable = false)
+	private Boolean isLoggedIn;
+
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "Credentials_id", referencedColumnName = "id")
+	private Credentials credentials;
 
 	public Admin(){ }
 
-	public Admin(String name){
-		this.name = name;
+	@Override
+	public Credentials getCredentials() {
+		return credentials;
 	}
 
-	public String getName() {
-		return name;
+	@Override
+	public void setCredentials(Credentials credentials) {
+		this.credentials = credentials;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public Boolean getLoggedIn() {
+		return isLoggedIn;
+	}
+
+	public void setLoggedIn(Boolean loggedIn) {
+		isLoggedIn = loggedIn;
+	}
+
+	public Long getId(){
+		return super.id;
+	}
+
+	public void setId(Long id){
+		super.id = id;
 	}
 
 	@Override
 	public String toString() {
-		return "Admin [" +
-				"adminName="+ name +
-				']';
+		return "Admin{" +
+				"isLoggedIn=" + isLoggedIn +
+				", credentials=" + credentials +
+				'}';
 	}
 }
