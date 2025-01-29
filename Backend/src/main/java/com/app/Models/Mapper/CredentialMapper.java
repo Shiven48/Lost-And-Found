@@ -1,7 +1,8 @@
-package com.app.Entity.Mapper;
+package com.app.Models.Mapper;
 
-import com.app.Entity.DTO.Credentials.CredentialsResponseDto;
-import com.app.Entity.Models.Credentials;
+import com.app.Models.DTO.Credentials.CredentialsResponseDto;
+import com.app.Models.Entities.Credentials;
+import com.app.Models.Entities.User;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -14,7 +15,7 @@ public class CredentialMapper {
         );
     }
 
-
-
-
+//    public Credentials toCredential(CredentialsRequestDto dto, String role){
+//        return new User();
+//    }
 }
