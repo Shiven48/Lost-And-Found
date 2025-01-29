@@ -3,23 +3,29 @@ package com.app.Service;
 import java.util.Collections;
 import java.util.List;
 
-import com.app.DTO.Credentials.CredentialsResponseDto;
-import com.app.Entity.User;
-import com.app.Exception.ExceptionTypes.ResourceNotFoundException;
-import com.app.Mapper.CredentialMapper;
+import com.app.Models.DTO.Credentials.CredentialsResponseDto;
+import com.app.Models.Entities.User;
+import com.app.Utils.Exception.ExceptionTypes.ResourceNotFoundException;
+import com.app.Models.Mapper.CredentialMapper;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 
-import com.app.Entity.Credentials;
+import com.app.Models.Entities.Credentials;
 import com.app.Repository.CredentialsRepository;
 
 @Service
 public class CredentialService {
 
 	private final CredentialsRepository credentialsRepository;
+	private final CredentialMapper credentialMapper;
 
-	public CredentialService(CredentialsRepository credentialsRepository) {
+	public CredentialService(
+			CredentialsRepository credentialsRepository,
+			CredentialMapper mapper
+	) {
 		this.credentialsRepository = credentialsRepository;
+		this.credentialMapper = mapper;
 	}
 
 	// get all credentials service
@@ -50,15 +56,17 @@ public class CredentialService {
 	}
 
 	// post credentials service
-	@Transactional
-	public CredentialsResponseDto addCredentials(Credentials credential) {
-		try {
-			Credentials credentials = credentialsRepository.save(credential);
-			return CredentialMapper.ToCredentialResponseDto(credentials);
-		} catch (Exception e) {
-			throw new RuntimeException("Failed to add credentials", e);
-		}
-	}
+//	@Transactional
+//	public CredentialsResponseDto addCredentials(@Valid CredentialsRequestDto RequestCredential) {
+//		try {
+//			String role = checkRole(RequestCredential);
+//			Credentials credential = credentialMapper.toCredential(RequestCredential,role);
+//			credential = credentialsRepository.save(credential);
+//			return CredentialMapper.ToCredentialResponseDto(credential);
+//		} catch (Exception e) {
+//			throw new RuntimeException("Failed to add credentials", e);
+//		}
+//	}
 
 	// update the credential by id
 	@Transactional
@@ -94,11 +102,11 @@ public class CredentialService {
 		Credentials credential = credentialsRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Credential not found with id: " + id));
 
-		if (credential.getUser() != null) {
-			User user = credential.getUser();
-			user.setCredentials(null);  // Break bidirectional relationship
-			credential.setUser(null);
-		}
+//		if (credential.getUser() != null) {
+//			User user = credential.getUser();
+//			user.setCredentials(null);  // Break bidirectional relationship
+//			credential.setUser(null);
+//		}
 		credentialsRepository.delete(credential);
 
 		if (credentialsRepository.existsById(id)) {
