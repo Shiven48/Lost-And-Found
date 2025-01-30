@@ -23,9 +23,6 @@ public class UserMapper {
         this.credentialsRepository = credentialsRepository;
     }
 
-//  Saved Credentials : Credentials{name='KetoAdm', email='shevenroyal@gmail.com', password='Some.password@me', roles='ROLE_ADMIN', registrationDate=null, lastModified=null, id=1}
-//  User{isLoggedIn=null, lost_found=null, credentials=null, itemsFound=[], itemsLost=[], registrationDate=null, lastModified=null, id=1}
-
     public UserResponseDto userToUserResponseDto(UserType user, Credentials credential) {
         return new UserResponseDto(
                 user.getId(),
@@ -39,11 +36,6 @@ public class UserMapper {
         user.setLost_found(Lost_Found.LOST);
         user.setCredentials(credential);
         return user;
-    }
-
-    // Temporary
-    public User userRequestDtoToUser(User user, UserRequestDto requestDto) {
-        return  null;
     }
 
     public Credentials toUserResponseAdmin(@Valid UserRequestDto userRequestDto, String role) {
@@ -78,5 +70,11 @@ public class UserMapper {
 
     public UserFoundItemsDto toUserFoundItemsDto(User user) {
         return null;
+    }
+
+    public User UserDtoToUser(User oldUser, UserDto dto) {
+        oldUser.setLost_found(dto.lost_found());
+        oldUser.setLoggedIn(dto.isLoggedIn());
+        return oldUser;
     }
 }
