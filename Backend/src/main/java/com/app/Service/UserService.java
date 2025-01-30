@@ -1,10 +1,7 @@
 package com.app.Service;
 
 import com.app.Models.DTO.Item.ItemRequestDto;
-import com.app.Models.DTO.User.UserFoundItemsDto;
-import com.app.Models.DTO.User.UserLostItemsDto;
-import com.app.Models.DTO.User.UserRequestDto;
-import com.app.Models.DTO.User.UserResponseDto;
+import com.app.Models.DTO.User.*;
 import com.app.Models.Entities.Admin;
 import com.app.Models.Entities.Credentials;
 import com.app.Models.Entities.Item;
@@ -22,6 +19,7 @@ import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class UserService {
@@ -99,6 +97,45 @@ public class UserService {
         return credentialsRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("No user with Id"+ id));
     }
 
+    private boolean validateUser(UserDto user) {
+        return user != null;
+    }
+
+    private boolean validateId(Long id) {
+        return id != null;
+    }
+
+    private boolean checkIfIdPresent(@Valid Long id) {
+        return userRepository.existsById(id);
+    }
+
+    // Endpoint to update a user by his id
+    @Transactional
+    public UserResponseDto updateUsers(@Valid Long id,@Valid UserDto requestedUser) {
+        if(!(validateId(id) && validateUser(requestedUser))){
+            throw new IllegalArgumentException("The parameters are not legal");
+        }
+        if(!checkIfIdPresent(id)){
+            throw new NoSuchElementException("There is no element with the ID :"+id);
+        }
+        User oldUser = fetchUserByUserId(id);
+        System.out.println(oldUser);
+        User updatedUser = userRepository.save(userMapper.UserDtoToUser(oldUser,requestedUser));
+        System.out.println(updatedUser);
+        return userMapper.userToUserResponseDto(updatedUser,updatedUser.getCredentials());
+    }
+
+    public UserResponseDto updateCredentials(){
+        return null;
+    }
+
+    public UserResponseDto updateLostFoundItems(){
+        return null;
+    }
+
+
+
+
 //    ----------    X ------------------- X ----------------------- X ------------------- X ----------------------- X -------------------
 
     // Endpoint to fetch a list of all users.
@@ -158,29 +195,6 @@ public class UserService {
         }
     }
 
-    // Endpoint to update a user by his id
-    @Transactional
-    public UserResponseDto updateUsers(Long id, User user) {
-//        if (id == null) {
-//            throw new IllegalArgumentException("Id cannot be null");
-//        }
-//        if (user == null) {
-//            throw new IllegalArgumentException("user cannot be null");
-//        }
-//        try {
-//            User resp_user = helperForFetchUser(id);
-//
-//            UserRequestDto userRequestDto = userMapper.UserToUserRequestDto(user);
-//
-//            User final_user = userRepository.save(userMapper.userRequestDtoToUser(resp_user, userRequestDto));
-//
-//            return userMapper.userToUserResponseDto(final_user);
-//        } catch (Exception e) {
-//            throw new RuntimeException("Cannot update the user");
-//        }
-        return new UserResponseDto(100L,null,true);
-    }
-
     // Endpoint to delete a user by their ID.
     @Transactional
     public UserResponseDto deleteUser(Long id) {
@@ -223,6 +237,10 @@ public class UserService {
         }
     }
 
+    private User helperForFetchUser(Long id){
+        return new User();
+    }
+
     // For Adding Found Item for a specific user
     @Transactional
     public UserFoundItemsDto addFoundItem(Long id, ItemRequestDto requestItem) {
@@ -244,12 +262,4 @@ public class UserService {
         }
     }
 
-    // To reduce redundancy from addLostItem, addFoundItem, updateUsers methods
-    private User helperForFetchUser(Long id) {
-        if (!userRepository.existsById(id)) {
-            throw new IllegalArgumentException("User not found");
-        }
-        return userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid user id:" + id));
-    }
 }
