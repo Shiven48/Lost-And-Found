@@ -36,7 +36,6 @@ public class CredentialService {
 			List<CredentialsResponseDto> credentialDto = allCredentials.stream()
 					.map(CredentialMapper::ToCredentialResponseDto)
 					.toList();
-
 			return allCredentials.isEmpty() ? Collections.emptyList() : credentialDto;
 		} catch(Exception e) {
 			throw new RuntimeException("Failed to retrieve users", e);
