@@ -19,13 +19,6 @@ public class CredentialsController {
 	public CredentialsController(CredentialService credentialService) {
 		this.credentialService = credentialService;
 	}
-	
-	// sign in (No security added yet)
-//	@PostMapping(path="",name = "PostCredentials",consumes = {"application/json","application/xml"})
-//	public ResponseEntity<CredentialsResponseDto> postCredentials(@Valid @RequestBody CredentialsRequestDto credential) {
-//		CredentialsResponseDto response_credential = credentialService.addCredentials(credential);
-//		return ResponseEntity.status(HttpStatus.CREATED).body(response_credential);
-//	}
 
 	// log in (No security added yet)
 	@GetMapping(path="/{id}",name = "GetCredentials")
@@ -41,11 +34,20 @@ public class CredentialsController {
 		return ResponseEntity.status(HttpStatus.OK).body(response_AllCredential);
 	}
 
+//	------------ X ------------ X ------------ X ------------ X ------------ X ------------ X ------------
+
 	// Endpoint to update existing credential
 	@PutMapping(name="updateCredential", path="/{id}")
 	public ResponseEntity<CredentialsResponseDto> updateCredentials(@PathVariable("id") Long id, @RequestBody Credentials credential){
 		CredentialsResponseDto updated_credential = credentialService.updateCredentialsService(id,credential);
 		return ResponseEntity.status(HttpStatus.OK).body(updated_credential);
 	}
+
+	// sign in (No security added yet)
+//	@PostMapping(path="",name = "PostCredentials",consumes = {"application/json","application/xml"})
+//	public ResponseEntity<CredentialsResponseDto> postCredentials(@Valid @RequestBody CredentialsRequestDto credential) {
+//		CredentialsResponseDto response_credential = credentialService.addCredentials(credential);
+//		return ResponseEntity.status(HttpStatus.CREATED).body(response_credential);
+//	}
 
 }
