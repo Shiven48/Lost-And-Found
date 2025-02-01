@@ -1,6 +1,6 @@
 package com.app.Repository.Specification;
 
-import com.app.Entity.Item;
+import com.app.Models.Entities.Item;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 

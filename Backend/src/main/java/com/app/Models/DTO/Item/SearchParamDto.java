@@ -1,4 +1,4 @@
-package com.app.Entity.DTO.Item;
+package com.app.Models.DTO.Item;
 
 public record SearchParamDto(
         String category,

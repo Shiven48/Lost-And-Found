@@ -1,7 +1,7 @@
 package com.app.Models.DTO.Admin;
 
 public record AdminResponseDto(
-        Long userId,
+        Long adminId,
         String name,
         Boolean isLoggedIn
 ) {

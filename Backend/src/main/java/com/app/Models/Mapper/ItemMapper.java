@@ -1,11 +1,18 @@
-package com.app.Entity.Mapper;
+package com.app.Models.Mapper;
 
-import com.app.Entity.DTO.Item.*;
-import com.app.Entity.Models.Item;
-import com.app.Entity.Enums.Lost_Found;
-import com.app.Entity.Models.User;
+import com.app.Models.DTO.Credentials.CredentialsResponseDto;
+import com.app.Models.DTO.Item.*;
+import com.app.Models.Entities.Credentials;
+import com.app.Models.Entities.Item;
+import com.app.Models.Enums.Lost_Found;
+import com.app.Models.Entities.User;
+import com.app.Models.Interface.UserType;
+import com.app.Repository.CredentialsRepository;
+import com.app.Service.CredentialService;
+import com.app.Service.ItemService;
+import com.app.Service.UserService;
 import com.app.Utils.Exception.ExceptionTypes.ResourceNotFoundException;
-import com.app.Entity.Interface.Taggable;
+import com.app.Models.Interface.Taggable;
 import com.app.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,7 +27,10 @@ public class ItemMapper {
     private final UserRepository userRepository;
 
     @Autowired
-    ItemMapper(UserMapper userMapper, UserRepository userRepository) {
+    ItemMapper(
+            UserMapper userMapper,
+            UserRepository userRepository
+    ) {
         this.userMapper = userMapper;
         this.userRepository = userRepository;
     }
@@ -32,21 +42,28 @@ public class ItemMapper {
             );
         }
 
-    public ItemResponseDto toItemResponseDto(Item item) {
-        return new ItemResponseDto(
-                item.getId(),
-                item.getName(),
-                item.getDescription(),
-                item.getCategory(),
-                item.getObj_Image(),
-                item.getLost_found(),
-                item.getPlace(),
-                item.getTags(),
-                item.getTime()
-        );
+    public void ItemFromWithoutOwnerDto(Item item, ItemWithoutOwner dto) {
+        item.setName(dto.name());
+        item.setDescription(dto.description());
+        item.setCategory(dto.category());
+        item.setObj_Image(dto.objImage());
+
+        // This mean I am a user and I have found the item
+        item.setLost_found(Lost_Found.FOUND);
+
+        item.setPlace(dto.place());
+        item.setTags(addTags(dto));
+
+        item.setTime(dto.time());
+
+        if (dto.founderId() != null) {
+            User finder = userRepository.findById(dto.founderId())
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid user id:" + dto.founderId()));
+            item.setFinder(finder);
+        }
     }
 
-    public void ItemFromWithoutOwnerDto(Item item, ItemWithoutOwner dto) {
+    public void ItemFromWithoutFounderDto(Item item, ItemWithoutFounder dto) {
         item.setName(dto.name());
         item.setDescription(dto.description());
         item.setCategory(dto.category());
@@ -59,29 +76,9 @@ public class ItemMapper {
 
         item.setTime(dto.time());
 
-        if (dto.founderId() != null) {
-            User finder = userRepository.findById(dto.founderId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Finder not found with id: " + dto.founderId()));
-            item.setFinder(finder);
-        }
-    }
-
-    public void ItemFromWithoutFounderDto(Item item, ItemWithoutFounder itemWithoutFounder) {
-        item.setName(itemWithoutFounder.name());
-        item.setDescription(itemWithoutFounder.description());
-        item.setCategory(itemWithoutFounder.category());
-        item.setObj_Image(itemWithoutFounder.objImage());
-
-        item.setLost_found(Lost_Found.FOUND);
-
-        item.setPlace(itemWithoutFounder.place());
-        item.setTags(addTags(itemWithoutFounder));
-
-        item.setTime(itemWithoutFounder.time());
-
-        if(itemWithoutFounder.ownerId() != null) {
-            User owner = userRepository.findById(itemWithoutFounder.ownerId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Owner not found with id: " + itemWithoutFounder.ownerId()));
+        if(dto.ownerId() != null) {
+            User owner = userRepository.findById(dto.ownerId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Owner not found with id: " + dto.ownerId()));
             item.setOwner(owner);
         }
     }
@@ -131,7 +128,7 @@ public class ItemMapper {
                 item.getPlace(),
                 item.getTags(),
                 item.getTime(),
-                userMapper.toUserDto(item.getOwner())
+                userMapper.userToUserResponseDto(item.getOwner(),item.getOwner().getCredentials())
         );
     }
 
@@ -146,12 +143,12 @@ public class ItemMapper {
                 item.getPlace(),
                 item.getTags(),
                 item.getTime(),
-                userMapper.toUserDto(item.getFinder())
+                userMapper.userToUserResponseDto(item.getFinder(),item.getFinder().getCredentials())
         );
     }
 
-    public Object toFullItemResponseDto(Item item) {
-        return new ItemFullResponseDto(
+    public ItemResponseDto toItemResponseDto(Item item) {
+        return new ItemResponseDto(
                 item.getId(),
                 item.getName(),
                 item.getDescription(),
@@ -161,8 +158,8 @@ public class ItemMapper {
                 item.getPlace(),
                 item.getTags(),
                 item.getTime(),
-                userMapper.toUserDto(item.getOwner()),
-                userMapper.toUserDto(item.getFinder())
+                userMapper.userToUserResponseDto(item.getOwner(),item.getOwner().getCredentials()),
+                userMapper.userToUserResponseDto(item.getOwner(),item.getFinder().getCredentials())
         );
     }
 }
