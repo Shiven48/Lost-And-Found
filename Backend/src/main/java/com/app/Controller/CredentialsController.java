@@ -2,6 +2,7 @@ package com.app.Controller;
 
 import java.util.List;
 
+import com.app.Models.DTO.Credentials.CredentialsRequestDto;
 import com.app.Models.DTO.Credentials.CredentialsResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,20 +35,10 @@ public class CredentialsController {
 		return ResponseEntity.status(HttpStatus.OK).body(response_AllCredential);
 	}
 
-//	------------ X ------------ X ------------ X ------------ X ------------ X ------------ X ------------
-
 	// Endpoint to update existing credential
 	@PutMapping(name="updateCredential", path="/{id}")
-	public ResponseEntity<CredentialsResponseDto> updateCredentials(@PathVariable("id") Long id, @RequestBody Credentials credential){
+	public ResponseEntity<CredentialsResponseDto> updateCredentials(@PathVariable("id") Long id, @RequestBody CredentialsRequestDto credential){
 		CredentialsResponseDto updated_credential = credentialService.updateCredentialsService(id,credential);
 		return ResponseEntity.status(HttpStatus.OK).body(updated_credential);
 	}
-
-	// sign in (No security added yet)
-//	@PostMapping(path="",name = "PostCredentials",consumes = {"application/json","application/xml"})
-//	public ResponseEntity<CredentialsResponseDto> postCredentials(@Valid @RequestBody CredentialsRequestDto credential) {
-//		CredentialsResponseDto response_credential = credentialService.addCredentials(credential);
-//		return ResponseEntity.status(HttpStatus.CREATED).body(response_credential);
-//	}
-
 }
