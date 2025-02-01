@@ -42,26 +42,13 @@ public class ItemMapper {
             );
         }
 
-    public ItemResponseDto toItemResponseDto(Item item) {
-        return new ItemResponseDto(
-                item.getId(),
-                item.getName(),
-                item.getDescription(),
-                item.getCategory(),
-                item.getObj_Image(),
-                item.getLost_found(),
-                item.getPlace(),
-                item.getTags(),
-                item.getTime()
-        );
-    }
-
     public void ItemFromWithoutOwnerDto(Item item, ItemWithoutOwner dto) {
         item.setName(dto.name());
         item.setDescription(dto.description());
         item.setCategory(dto.category());
         item.setObj_Image(dto.objImage());
 
+        // This mean I am a user and I have found the item
         item.setLost_found(Lost_Found.FOUND);
 
         item.setPlace(dto.place());
@@ -160,8 +147,8 @@ public class ItemMapper {
         );
     }
 
-    public Object toFullItemResponseDto(Item item) {
-        return new ItemFullResponseDto(
+    public ItemResponseDto toItemResponseDto(Item item) {
+        return new ItemResponseDto(
                 item.getId(),
                 item.getName(),
                 item.getDescription(),
@@ -171,8 +158,8 @@ public class ItemMapper {
                 item.getPlace(),
                 item.getTags(),
                 item.getTime(),
-                userMapper.toUserDto(item.getOwner()),
-                userMapper.toUserDto(item.getFinder())
+                userMapper.userToUserResponseDto(item.getOwner(),item.getOwner().getCredentials()),
+                userMapper.userToUserResponseDto(item.getOwner(),item.getFinder().getCredentials())
         );
     }
 }
