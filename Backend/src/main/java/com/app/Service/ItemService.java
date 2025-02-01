@@ -1,17 +1,15 @@
 package com.app.Service;
 
-import com.app.DTO.Item.*;
-import com.app.Entity.Item;
-import com.app.Entity.Lost_Found;
-import com.app.Exception.ExceptionTypes.ResourceNotFoundException;
-import com.app.Mapper.ItemMapper;
+import com.app.Models.DTO.Item.*;
+import com.app.Models.Entities.Item;
+import com.app.Models.Enums.Lost_Found;
+import com.app.Utils.Exception.ExceptionTypes.ResourceNotFoundException;
+import com.app.Models.Mapper.ItemMapper;
 import com.app.Repository.ItemRepository;
 import com.app.Repository.Specification.ItemSpecification;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -35,27 +33,50 @@ public class ItemService {
         this.paginationAndSorting = paginationAndSorting;
     }
 
+    @Transactional
+    public ItemDeleteResponseDto deleteItem(Long id) {
+        if(!checkIfIdNull(id)) {
+            throw new IllegalArgumentException("Object id cannot be null");
+        }
+        if(!checkItemExists(id)){
+            throw new ResourceNotFoundException("Object with id: " + id + " does not exist");
+        }
+        Item item = fetchItemById(id);
+        itemRepository.delete(item);
+        return itemMapper.toItemDeleteResponseDto(item);
+    }
 
-    public <T> List<T> getAllitems() {
+    private boolean checkIfIdNull(Long id){
+        return id!=null;
+    }
+
+    private boolean checkItemExists(Long id) {
+        return itemRepository.existsById(id);
+    }
+
+    private Item fetchItemById(Long id){
+        return itemRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid user id:" + id));
+    }
+
+
+    public <T> List<T> getAllItems() {
         try{
-            List<Item> items = itemRepository.findAll();
-            return items.stream()
+            return itemRepository.findAll().stream()
                     .map(item -> {
                         return (T) validate(item);
-                    })
-                    .toList();
+                    }).toList();
         } catch(Exception e){
             throw new RuntimeException("Failed to retrieve all items", e);
         }
     }
 
     public <T>T getById(Long id) {
-        if(id == null) {
+        if(checkIfIdNull(id)) {
             throw new IllegalArgumentException("Object id cannot be null");
         }
         try{
-            Item item = itemRepository.findById(id)
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid user id:" + id));
+            Item item = fetchItemById(id);
             return validate(item);
         } catch(Exception e) {
             throw new RuntimeException("Failed to retrieve object with id: "+id, e);
@@ -87,6 +108,7 @@ public class ItemService {
         try{
             Item item = new Item();
             itemMapper.ItemFromWithoutOwnerDto(item,itemWithoutOwner);
+            item.getFinder().addFoundItem(item);
             Item resp_item = itemRepository.save(item);
             return validate(resp_item);
         } catch (Exception e) {
@@ -102,12 +124,15 @@ public class ItemService {
         try{
             Item item = new Item();
             itemMapper.ItemFromWithoutFounderDto(item,itemWithoutFounder);
+            item.getOwner().addLostItem(item);
             Item resp_item = itemRepository.save(item);
             return validate(resp_item);
         } catch (Exception e) {
             throw new RuntimeException("Failed to create Found object", e);
         }
     }
+
+    // ================ X ================ X ================ X ================ X ================ X ================
 
     @Transactional
     public ItemResponseDto updateItem(ItemRequestDto item, Long id) {
@@ -132,50 +157,6 @@ public class ItemService {
         } catch(Exception e){
             throw new RuntimeException("Failed to update object with id: "+id, e);
         }
-    }
-
-    @Transactional
-    public ItemDeleteResponseDto deleteItem(Long id) {
-        if(id == null) {
-            throw new IllegalArgumentException("Object id cannot be null");
-        }
-        try{
-            if(!itemRepository.existsById(id)) {
-                throw new ResourceNotFoundException("Object with id: " + id + " does not exist");
-            }
-            Item deleted_item = itemRepository.findById(id)
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid user id:" + id));
-
-           String name = deleted_item.getName();
-
-            itemRepository.delete(deleted_item);
-            return itemMapper.toItemDeleteResponseDto(deleted_item);
-        } catch(Exception e){
-            throw new RuntimeException("Failed to delete object with id: "+id, e);
-        }
-    }
-
-    // Used to call different dto based on the input at runtime (Not any real validation or security aspect)
-    public <T>T validate(Item item) {
-        if(item.getTags() != null) {
-            if(item.getFinder() != null && item.getOwner() != null) {
-                // dto with owner and finder
-                return (T) itemMapper.toFullItemResponseDto(item);
-            }
-            if(item.getOwner() == null && item.getFinder() == null) {
-                // dto without owner and finder
-                return (T) itemMapper.toItemResponseDto(item);
-            }
-            if(item.getFinder() != null){
-                //dto without owner
-                return (T) itemMapper.toItemWithoutOwnerResponse(item);
-            }
-            if(item.getOwner() != null){
-                //dto without finder
-                return (T) itemMapper.toItemWithoutFounderResponse(item);
-            }
-        }
-        throw new IllegalArgumentException("Parameters are not set correctly");
     }
 
     public <T> List<T> getAllFoundItems() {
@@ -255,4 +236,37 @@ public class ItemService {
                 .map( pageItem -> ((T) validate(pageItem)))
                 .toList();
     }
+
+    // Used to call different dto based on the input at runtime (Not any real validation or security aspect)
+    public <T>T validate(Item item) {
+        if(item.getTags() != null) {
+            if(item.getFinder() != null && item.getOwner() != null) {
+                // dto with owner and finder
+                return (T) itemMapper.toFullItemResponseDto(item);
+            }
+            if(item.getOwner() == null && item.getFinder() == null) {
+                // dto without owner and finder
+                return (T) itemMapper.toItemResponseDto(item);
+            }
+            if(item.getFinder() != null){
+                //dto without owner
+                return (T) itemMapper.toItemWithoutOwnerResponse(item);
+            }
+            if(item.getOwner() != null){
+                //dto without finder
+                return (T) itemMapper.toItemWithoutFounderResponse(item);
+            }
+        }
+        throw new IllegalArgumentException("Parameters are not set correctly");
+    }
+
+//    public void addTag(String tag) {
+//        if (tag != null && !tag.trim().isEmpty()) {
+//            this.tags.add(tag);
+//        }
+//    }
+//
+//    public void removeTag(String tag) {
+//        this.tags.remove(tag);
+//    }
 }
