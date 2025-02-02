@@ -16,6 +16,8 @@ import com.app.Repository.ItemRepository;
 import com.app.Repository.UserRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -177,25 +179,30 @@ public class UserService {
         return userRepository.findAll().stream().toList();
     }
 
-//    ----------    X ------------------- X ----------------------- X ------------------- X ----------------------- X -------------------
+    // Endpoint to fetch a list of all users.
+    public List<UserResponseDto> userAll(int pages, int pageSize) {
+        paginationAndSorting.validatePaginate(pages, pageSize);
+        return userRepository.findAll(PageRequest.of(pages, pageSize))
+                .stream()
+                .map(user -> {
+                    return userMapper.userToUserResponseDto(user,user.getCredentials());
+                })
+                .toList();
+    }
 
     // Fetch Lost items by a specific user
     public <T> List<T> getLostItemsForAUser(Long id) {
-        if (id == null) {
-            throw new IllegalArgumentException("Id cannot be null");
-        }
+        checkIfIdNull(id);
         try {
-            if (!userRepository.existsById(id)) {
+            if (!checkIfIdPresent(id)) {
                 throw new IllegalArgumentException("User not found");
             }
-            User user = userRepository.findById(id)
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid user id:" + id));
-            List<Item> LostItems = user.getItemsLost();
-            return LostItems.stream()
+            return fetchUserByUserId(id)
+                    .getItemsLost()
+                    .stream()
                     .map(lost -> {
-                        return (T) itemService.validate(lost);
-                    })
-                    .toList();
+                        return (T)itemService.validate(lost);
+                    }).toList();
         } catch (Exception e) {
             throw new RuntimeException("Cannot get lost items");
         }
@@ -203,36 +210,19 @@ public class UserService {
 
     // Fetch Found items by a specific user
     public <T> List<T> getFoundItemsForAUser(Long id) {
-        if (id == null) {
-            throw new IllegalArgumentException("Id cannot be null");
-        }
+        checkIfIdNull(id);
         try {
-            if (!userRepository.existsById(id)) {
+            if (!checkIfIdPresent(id)) {
                 throw new IllegalArgumentException("User not found");
             }
-            User user = userRepository.findById(id)
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid user id:" + id));
-            List<Item> FoundItems = user.getItemsFound();
-            return FoundItems.stream()
+            return fetchUserByUserId(id)
+                    .getItemsFound()
+                    .stream()
                     .map(lost -> {
                         return (T) itemService.validate(lost);
-                    })
-                    .toList();
+                    }).toList();
         } catch (Exception e) {
             throw new RuntimeException("Cannot get lost items");
         }
     }
-
-
-//    // Endpoint to fetch a list of all users.
-//    public List<UserResponseDto> userAll(int pages, int pageSize, String field, String direction) {
-//        System.out.println(pages+" "+pageSize+" "+field+" "+direction);
-//        paginationAndSorting.validatePaginateAndSort(pages, pageSize, field, direction);
-//        return userRepository.findAll(PageRequest.of(pages, pageSize).withSort(Sort.by(Sort.Direction.valueOf(direction),field)))
-//                .stream()
-//                .map(user -> {
-//                    return userMapper.userToUserResponseDto(user,user.getCredentials());
-//                })
-//                .toList();
-//    }
 }

@@ -13,6 +13,10 @@ public class PaginationAndSorting {
         validateDirection(direction);
     }
 
+    public void validatePaginate(int pageNumber, int pageSize){
+        validatePaginationParams(pageNumber, pageSize);
+    }
+
     private void validatePaginationParams(int pageNumber, int pageSize) {
         if (pageNumber < MINIMUM_PAGE_NUMBER) {
             throw new IllegalArgumentException(

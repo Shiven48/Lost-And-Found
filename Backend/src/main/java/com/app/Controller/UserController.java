@@ -42,8 +42,6 @@ public class UserController {
 		return ResponseEntity.ok(resp_user);
 	}
 
-	// =============== X =============== X =============== X =============== X =============== X =============== X ===============
-
 	// Endpoint to add found Item for the given user
 	@PutMapping(path = "/{userId}/founditem/{itemId}")
 	public ResponseEntity<AddedResponseDto> foundItem(@PathVariable("userId") Long userId,
@@ -68,7 +66,9 @@ public class UserController {
 
 	// Endpoint to get all Lost items by a single user
 	@GetMapping(path = "/{id}/lostitem")
-	public <T> ResponseEntity<List<T>> getLostItems(@PathVariable("id") Long id){
+	public <T> ResponseEntity<List<T>> getLostItems(@PathVariable("id") Long id,
+													@RequestParam int pages,
+													@RequestParam int pageSize){
 		try{
 			return ResponseEntity.ok(userService.getLostItemsForAUser(id));
 		}catch(Exception e){
