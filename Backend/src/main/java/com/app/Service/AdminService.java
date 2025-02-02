@@ -3,6 +3,7 @@ package com.app.Service;
 import com.app.Models.DTO.Admin.AdminResponseDto;
 import com.app.Models.DTO.Item.ItemDeleteResponseDto;
 import com.app.Models.DTO.User.UserResponseDto;
+import com.app.Models.Entities.User;
 import com.app.Models.Mapper.AdminMapper;
 import com.app.Repository.AdminRepository;
 import jakarta.transaction.Transactional;
@@ -35,7 +36,11 @@ public class AdminService {
         return userService.deleteUser(id);
     }
 
-    public List<UserResponseDto> userFoundAll(){
+    public List<UserResponseDto> userFoundAll(int pages, int pageSize){
+        return userService.userAll(pages,pageSize);
+    }
+
+    public List<User> userFoundAll(){
         return userService.userAll();
     }
 
