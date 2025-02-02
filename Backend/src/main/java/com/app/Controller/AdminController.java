@@ -28,18 +28,18 @@ public class AdminController {
         return ResponseEntity.ok(admins);
     }
 
-    // Endpoint to fetch all Users by Admin
-//    @GetMapping(path="/users")
-//    public ResponseEntity<List<UserResponseDto>> fetchAll(
-//            @RequestParam(defaultValue = "0") int pages,
-//            @RequestParam(defaultValue = "10") int pageSize,
-//            @RequestParam(required = false) String sortField,
-//            @RequestParam(required = false) String direction
-//    ) {
-//        List<UserResponseDto> users = adminService.userFoundAll(pages,pageSize,sortField,direction);
-//        return ResponseEntity.ok(users);
-//    }
-    @GetMapping(path = "/users")
+//     Endpoint to fetch all Users by Admin
+    @GetMapping(path="/users")
+    public ResponseEntity<List<UserResponseDto>> fetchAll(
+            @RequestParam(defaultValue = "0") int pages,
+            @RequestParam(defaultValue = "10") int pageSize
+    ) {
+        List<UserResponseDto> users = adminService.userFoundAll(pages,pageSize);
+        return ResponseEntity.ok(users);
+    }
+
+    // For testing purpose
+    @GetMapping(path = "/users/full")
     public ResponseEntity<List<User>> fetchAll() {
         List<User> users = adminService.userFoundAll();
         return ResponseEntity.ok(users);
