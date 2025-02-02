@@ -1,9 +1,9 @@
-package com.app.Entity.Models;
+package com.app.Models.Entities;
 
-import com.app.Entity.Common.BaseAudit;
-import com.app.Entity.Enums.Category;
-import com.app.Entity.Enums.Lost_Found;
-import com.app.Entity.Interface.Taggable;
+import com.app.Models.Common.BaseAudit;
+import com.app.Models.Enums.Category;
+import com.app.Models.Enums.Lost_Found;
+import com.app.Models.Interface.Taggable;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
@@ -62,6 +62,14 @@ public class Item extends BaseAudit implements Taggable
 		this.time = time;
 		this.finder = finder;
 		this.owner = owner;
+	}
+
+	public Long getId(){
+		return super.id;
+	}
+
+	public void setId(Long id){
+		super.id = id;
 	}
 
 	public String getName() {
@@ -145,10 +153,15 @@ public class Item extends BaseAudit implements Taggable
 	}
 
 	public String toString() {
-		return "Item [id=" + id + ", name=" + name + ", description=" + description + ", obj_Type=" + category
-				+ ", obj_Image=" + obj_Image + ", lost_found=" + lost_found + ", place=" + place + ", time=" + time
-				+ ", finder=" + finder + ", owner=" + owner
-				+ super.toString() +
+		return "Item [id=" + id
+					 + ", name=" + name
+					 + ", description=" + description
+					 + ", obj_Type=" + category
+					 + ", obj_Image=" + obj_Image
+					 + ", lost_found=" + lost_found
+					 + ", place=" + place
+					 + ", time=" + time
+					 + super.toString() +
 				"]";
 	}
 }

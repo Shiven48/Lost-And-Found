@@ -50,13 +50,11 @@ public class User extends BaseAudit implements UserType
 	// For founder specific route
 	public void addFoundItem(Item item) {
 		itemsFound.add(item);
-		item.setFinder(this);
 	}
 
 	// For Owner specific route
 	public void addLostItem(Item item) {
 		itemsLost.add(item);
-		item.setOwner(this);
 	}
 
 	public Boolean getLoggedIn() {
@@ -105,8 +103,6 @@ public class User extends BaseAudit implements UserType
 				"isLoggedIn=" + isLoggedIn +
 				", lost_found=" + lost_found +
 				", credentials=" + credentials +
-				", itemsFound=" + itemsFound +
-				", itemsLost=" + itemsLost +
 				", registrationDate=" + registrationDate +
 				", lastModified=" + lastModified +
 				", id=" + id +
