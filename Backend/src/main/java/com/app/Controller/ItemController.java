@@ -32,14 +32,14 @@ public class ItemController {
         return ResponseEntity.ok(itemService.getById(id));
     }
 
-    // Endpoint to add CreateLostItem (I have lost the item)
+    // Endpoint to add CreateLostItem (I have lost the item) -> It would create new ID it means new item, and it means can update
     @PostMapping(name = "createLostItem", path = "lost")
     public <T> ResponseEntity<T> addLostItem(@RequestBody ItemWithoutFounder itemWithoutFounder) {
         T item_resp = itemService.createLostItem(itemWithoutFounder);
         return ResponseEntity.status(HttpStatus.CREATED).body(item_resp);
     }
 
-    // Endpoint to add CreateFoundItem (I have founded the item)
+    // Endpoint to add CreateFoundItem (I have founded the item) -> It would create new ID it means new item, and it means can update
     @PostMapping(name = "createFoundItem", path = "found")
     public <T> ResponseEntity<T> addFoundItem(@RequestBody ItemWithoutOwner itemWithoutOwner) {
         T item_resp = itemService.createFoundItem(itemWithoutOwner);

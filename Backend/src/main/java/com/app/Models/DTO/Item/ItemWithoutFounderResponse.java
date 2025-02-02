@@ -1,7 +1,8 @@
-package com.app.Entity.DTO.Item;
+package com.app.Models.DTO.Item;
 
-import com.app.Entity.DTO.User.UserDto;
-import com.app.Entity.Enums.Lost_Found;
+import com.app.Models.DTO.User.UserDto;
+import com.app.Models.DTO.User.UserResponseDto;
+import com.app.Models.Enums.Lost_Found;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -10,12 +11,12 @@ public record ItemWithoutFounderResponse(
         Long id,
         String name,
         String description,
-        String category,
+        com.app.Models.Enums.Category category,
         String objImage,
         Lost_Found lostFound,
         String place,
         List<String> tags,
         LocalTime time,
-        UserDto owner
+        UserResponseDto owner
 ) {
 }

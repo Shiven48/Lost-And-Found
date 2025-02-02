@@ -2,7 +2,6 @@ package com.app.Models.DTO.Item;
 
 import com.app.Models.Enums.Category;
 import com.app.Models.Enums.Lost_Found;
-import com.app.Models.Interface.Taggable;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -15,7 +14,7 @@ public record ItemRequestDto(
         @NotBlank(message = "The name should not be empty")
         String name,
 
-        @Size(max = 3000,message = "The message should not be more than 3000 words")
+        @Size(max = 3000,message = "The message should not be more than 2000 words")
         String description,
 
         Category category,
@@ -34,7 +33,7 @@ public record ItemRequestDto(
         Long finderId,
 
         Long ownerId
-)implements Taggable {
+)implements com.app.Models.Interface.Taggable {
     @Override
     public List<String> getTags(){
         return tags;

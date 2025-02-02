@@ -2,7 +2,6 @@ package com.app.Service;
 
 import com.app.Models.DTO.Item.*;
 import com.app.Models.Entities.Item;
-import com.app.Models.Enums.Lost_Found;
 import com.app.Utils.Exception.ExceptionTypes.ResourceNotFoundException;
 import com.app.Models.Mapper.ItemMapper;
 import com.app.Repository.ItemRepository;
@@ -191,44 +190,11 @@ public class ItemService {
         throw new IllegalArgumentException("Parameters are not set correctly");
     }
 
-    // ================ X ================ X ================ X ================ X ================ X ================
-
-    public <T> List<T> getTimeAsc(String lost_found) {
-        Lost_Found status = Lost_Found.valueOf(lost_found.toUpperCase());
-        return itemRepository.findAllByLost_FoundOrderByTimeAsc(status)
+    public <T> List<T> PaginateAndSort(int pages, int pageSize, String field, String direction) {
+        paginationAndSorting.validatePaginateAndSort(pages, pageSize, field, direction);
+        return itemRepository.findAll(PageRequest.of(pages, pageSize).withSort(Sort.by(Sort.Direction.valueOf(direction),field)))
                 .stream()
-                .map(item -> ((T) validate(item)))
-                .toList();
-    }
-
-    public <T> List<T> getTimeDesc(String lost_found) {
-        Lost_Found status = Lost_Found.valueOf(lost_found.toUpperCase());
-        return itemRepository.findAllByLost_FoundOrderByTimeDesc(status)
-                .stream()
-                .map(item -> ((T) validate(item)))
-                .toList();
-    }
-
-    public <T> List<T> getAllTimeAsc() {
-        return itemRepository.findAllOrderByTimeAsc()
-                .stream()
-                .map(item -> ((T) validate(item)))
-                .toList();
-    }
-
-    public <T> List<T> getAllTimeDesc() {
-        return itemRepository.findAllOrderByTimeDesc()
-                .stream()
-                .map(item -> ((T) validate(item)))
-                .toList();
-    }
-
-    public <T> List<T> getByCategory(String category) {
-        List<Item> retrieved_Items = itemRepository.findAllByCategory(category)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid category: " + category));
-        return retrieved_Items
-                .stream()
-                .map(item -> ((T) validate(item)))
+                .map( pageItem -> ((T) validate(pageItem)))
                 .toList();
     }
 
@@ -243,11 +209,12 @@ public class ItemService {
                 .toList();
     }
 
-    public <T> List<T> PaginateAndSort(int pages, int pageSize, String field, String direction) {
-        paginationAndSorting.validatePaginateAndSort(pages, pageSize, field, direction);
-        return itemRepository.findAll(PageRequest.of(pages, pageSize).withSort(Sort.by(Sort.Direction.valueOf(direction),field)))
+    public <T> List<T> getByCategory(String category) {
+        List<Item> retrieved_Items = itemRepository.findAllByCategory(category)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid category: " + category));
+        return retrieved_Items
                 .stream()
-                .map( pageItem -> ((T) validate(pageItem)))
+                .map(item -> ((T) validate(item)))
                 .toList();
     }
 

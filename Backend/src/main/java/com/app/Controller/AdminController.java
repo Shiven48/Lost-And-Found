@@ -3,6 +3,7 @@ package com.app.Controller;
 import com.app.Models.DTO.Admin.AdminResponseDto;
 import com.app.Models.DTO.Item.ItemDeleteResponseDto;
 import com.app.Models.DTO.User.UserResponseDto;
+import com.app.Models.Entities.User;
 import com.app.Service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -28,14 +29,19 @@ public class AdminController {
     }
 
     // Endpoint to fetch all Users by Admin
-    @GetMapping(path="/users")
-    public ResponseEntity<List<UserResponseDto>> fetchAll(
-            @RequestParam(defaultValue = "0") int pages,
-            @RequestParam(defaultValue = "10") int pageSize,
-            @RequestParam(required = false) String sortField,
-            @RequestParam(required = false) String direction
-    ) {
-        List<UserResponseDto> users = adminService.userFoundAll(pages,pageSize,sortField,direction);
+//    @GetMapping(path="/users")
+//    public ResponseEntity<List<UserResponseDto>> fetchAll(
+//            @RequestParam(defaultValue = "0") int pages,
+//            @RequestParam(defaultValue = "10") int pageSize,
+//            @RequestParam(required = false) String sortField,
+//            @RequestParam(required = false) String direction
+//    ) {
+//        List<UserResponseDto> users = adminService.userFoundAll(pages,pageSize,sortField,direction);
+//        return ResponseEntity.ok(users);
+//    }
+    @GetMapping(path = "/users")
+    public ResponseEntity<List<User>> fetchAll() {
+        List<User> users = adminService.userFoundAll();
         return ResponseEntity.ok(users);
     }
 

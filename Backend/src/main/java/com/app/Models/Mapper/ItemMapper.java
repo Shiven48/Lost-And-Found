@@ -1,16 +1,9 @@
 package com.app.Models.Mapper;
 
-import com.app.Models.DTO.Credentials.CredentialsResponseDto;
 import com.app.Models.DTO.Item.*;
-import com.app.Models.Entities.Credentials;
 import com.app.Models.Entities.Item;
 import com.app.Models.Enums.Lost_Found;
 import com.app.Models.Entities.User;
-import com.app.Models.Interface.UserType;
-import com.app.Repository.CredentialsRepository;
-import com.app.Service.CredentialService;
-import com.app.Service.ItemService;
-import com.app.Service.UserService;
 import com.app.Utils.Exception.ExceptionTypes.ResourceNotFoundException;
 import com.app.Models.Interface.Taggable;
 import com.app.Repository.UserRepository;
@@ -162,4 +155,13 @@ public class ItemMapper {
                 userMapper.userToUserResponseDto(item.getOwner(),item.getFinder().getCredentials())
         );
     }
+
+    public AddedResponseDto toAddedResponseDto(Long id, Item item) {
+        return new AddedResponseDto(
+                id,
+                userMapper.userToUserResponseDto(item.getOwner(),item.getOwner().getCredentials()),
+                userMapper.userToUserResponseDto(item.getFinder(),item.getFinder().getCredentials())
+        );
+    }
+
 }

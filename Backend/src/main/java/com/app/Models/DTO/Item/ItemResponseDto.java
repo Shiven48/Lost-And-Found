@@ -1,6 +1,8 @@
-package com.app.Entity.DTO.Item;
+package com.app.Models.DTO.Item;
 
-import com.app.Entity.Enums.Lost_Found;
+import com.app.Models.DTO.User.UserResponseDto;
+import com.app.Models.Enums.Category;
+import com.app.Models.Enums.Lost_Found;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -9,11 +11,13 @@ public record ItemResponseDto(
         Long id,
         String name,
         String description,
-        String category,
+        Category category,
         String objImage,
         Lost_Found lostFound,
         String place,
         List<String> tags,
-        LocalTime time
+        LocalTime time,
+        UserResponseDto owner,
+        UserResponseDto finder
 ) {
 }

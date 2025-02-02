@@ -1,6 +1,6 @@
 package com.app.Service;
 
-import com.app.Models.DTO.Item.ItemRequestDto;
+import com.app.Models.DTO.Item.AddedResponseDto;
 import com.app.Models.DTO.User.*;
 import com.app.Models.Entities.Admin;
 import com.app.Models.Entities.Credentials;
@@ -32,6 +32,7 @@ public class UserService {
     private final CredentialsRepository credentialsRepository;
     private final AdminRepository adminRepository;
     private final AdminMapper adminMapper;
+    private final PaginationAndSorting paginationAndSorting;
 
     public UserService(
             UserRepository userRepository,
@@ -41,7 +42,8 @@ public class UserService {
             ItemService itemService,
             CredentialsRepository credentialsRepository,
             AdminRepository adminRepository,
-            AdminMapper adminMapper
+            AdminMapper adminMapper,
+            PaginationAndSorting paginationAndSorting
     ) {
         this.itemMapper = itemMapper;
         this.userMapper = userMapper;
@@ -51,6 +53,7 @@ public class UserService {
         this.credentialsRepository = credentialsRepository;
         this.adminRepository = adminRepository;
         this.adminMapper = adminMapper;
+        this.paginationAndSorting = paginationAndSorting;
     }
 
     // Endpoint to fetch a user by their ID.
@@ -88,17 +91,17 @@ public class UserService {
         throw new IllegalArgumentException("User id should not be null");
     }
 
-    private User fetchUserByUserId(Long userId) {
+    public User fetchUserByUserId(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user id:" + userId));
     }
 
-    private Credentials fetchCredentialsById(Long id){
-        return credentialsRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("No user with Id"+ id));
+    private boolean checkUserDto(UserDto userDto) {
+        return userDto != null;
     }
 
-    private boolean validateUser(UserDto user) {
-        return user != null;
+    private boolean checkUser(Object user){
+        return user!=null;
     }
 
     private boolean validateId(Long id) {
@@ -112,44 +115,69 @@ public class UserService {
     // Endpoint to update a user by his id
     @Transactional
     public UserResponseDto updateUsers(@Valid Long id,@Valid UserDto requestedUser) {
-        if(!(validateId(id) && validateUser(requestedUser))){
+        if(!(validateId(id) && checkUserDto(requestedUser))){
             throw new IllegalArgumentException("The parameters are not legal");
         }
         if(!checkIfIdPresent(id)){
             throw new NoSuchElementException("There is no element with the ID :"+id);
         }
         User oldUser = fetchUserByUserId(id);
-        System.out.println(oldUser);
         User updatedUser = userRepository.save(userMapper.UserDtoToUser(oldUser,requestedUser));
-        System.out.println(updatedUser);
         return userMapper.userToUserResponseDto(updatedUser,updatedUser.getCredentials());
     }
 
-    public UserResponseDto updateCredentials(){
-        return null;
+    // Endpoint to delete a user by their ID.
+    @Transactional
+    public UserResponseDto deleteUser(Long id) {
+        if(!validateId(id)){
+            throw new IllegalArgumentException("User id is null");
+        }
+        User user = fetchUserByUserId(id);
+        if(checkUser(user)) {
+            userRepository.delete(user);
+        }
+        return userMapper.userToUserResponseDto(user,user.getCredentials());
     }
 
-    public UserResponseDto updateLostFoundItems(){
-        return null;
+    // For Adding Found Item for a specific user
+    @Transactional
+    public AddedResponseDto addFoundItem(Long userId, Long itemId) {
+        try {
+            checkIfIdNull(userId);
+            checkIfIdNull(itemId);
+            User user = fetchUserByUserId(userId);
+            Item item = itemRepository.findById(itemId)
+                    .orElseThrow(() -> new IllegalArgumentException("The item id cannot be null"));
+            item.setFinder(user);
+            user.addFoundItem(item);
+            return itemMapper.toAddedResponseDto(itemId,item);
+        } catch (Exception e) {
+            throw new RuntimeException("Cannot add lost item");
+        }
     }
 
+    // For Adding Lost Item for a specific user
+    @Transactional
+    public AddedResponseDto addLostItem(Long userId, Long itemId) {
+        try {
+            checkIfIdNull(userId);
+            checkIfIdNull(itemId);
+            User user = fetchUserByUserId(userId);
+            Item item = itemRepository.findById(itemId)
+                    .orElseThrow(() -> new IllegalArgumentException("The item id cannot be null"));
+            item.setOwner(user);
+            user.addLostItem(item);
+            return itemMapper.toAddedResponseDto(itemId,item);
+        } catch (Exception e) {
+            throw new RuntimeException("Cannot add lost item");
+        }
+    }
 
-
+    public List<User> userAll() {
+        return userRepository.findAll().stream().toList();
+    }
 
 //    ----------    X ------------------- X ----------------------- X ------------------- X ----------------------- X -------------------
-
-    // Endpoint to fetch a list of all users.
-    public List<UserResponseDto> userAll() {
-//        try {
-//            List<User> users = userRepository.findAll();
-//            return users.stream()
-//                    .map(userMapper::userToUserResponseDto)
-//                    .toList();
-//        } catch (Exception e) {
-//            throw new RuntimeException("Cant fetch all users", e);
-//        }
-        return List.of(new UserResponseDto(100L,null,true));
-    }
 
     // Fetch Lost items by a specific user
     public <T> List<T> getLostItemsForAUser(Long id) {
@@ -195,71 +223,16 @@ public class UserService {
         }
     }
 
-    // Endpoint to delete a user by their ID.
-    @Transactional
-    public UserResponseDto deleteUser(Long id) {
-//        if (id == null) {
-//            throw new IllegalArgumentException("Id cannot be null");
-//        }
-//        try {
-//            UserResponseDto response_user = null;
-//            User user = userRepository.findById(id)
-//                    .orElseThrow(() -> new IllegalArgumentException("Invalid user id:" + id));
-//            if (user != null) {
-//                response_user = userMapper.userToUserResponseDto(user);
-//                userRepository.delete(user);
-//            }
-//            return response_user;
-//        } catch (Exception e) {
-//            throw new RuntimeException("Cannot delete the user");
-//        }
-        return new UserResponseDto(100L,null,true);
-    }
 
-    // For Adding Lost Item for a specific user
-    @Transactional
-    public UserLostItemsDto addLostItem(Long id, ItemRequestDto requestItem) {
-        if (id == null) {
-            throw new IllegalArgumentException("Id cannot be null");
-        }
-        if (requestItem == null) {
-            throw new IllegalArgumentException("requestItem is null");
-        }
-        try {
-            User user = helperForFetchUser(id);
-            Item item = new Item();
-            itemMapper.ItemFromRequestDto(item, requestItem);
-            Item resp_item = itemRepository.save(item);
-            user.addLostItem(resp_item);
-            return userMapper.toUserLostItemsDto(user);
-        } catch (Exception e) {
-            throw new RuntimeException("Cannot add lost item");
-        }
-    }
-
-    private User helperForFetchUser(Long id){
-        return new User();
-    }
-
-    // For Adding Found Item for a specific user
-    @Transactional
-    public UserFoundItemsDto addFoundItem(Long id, ItemRequestDto requestItem) {
-        if (id == null) {
-            throw new IllegalArgumentException("Id cannot be null");
-        }
-        if (requestItem == null) {
-            throw new IllegalArgumentException("requestItem is null");
-        }
-        try {
-            User user = helperForFetchUser(id);
-            Item item = new Item();
-            itemMapper.ItemFromRequestDto(item, requestItem);
-            Item resp_item = itemRepository.save(item);
-            user.addFoundItem(resp_item);
-            return userMapper.toUserFoundItemsDto(user);
-        } catch (Exception e) {
-            throw new RuntimeException("Cannot add lost item");
-        }
-    }
-
+//    // Endpoint to fetch a list of all users.
+//    public List<UserResponseDto> userAll(int pages, int pageSize, String field, String direction) {
+//        System.out.println(pages+" "+pageSize+" "+field+" "+direction);
+//        paginationAndSorting.validatePaginateAndSort(pages, pageSize, field, direction);
+//        return userRepository.findAll(PageRequest.of(pages, pageSize).withSort(Sort.by(Sort.Direction.valueOf(direction),field)))
+//                .stream()
+//                .map(user -> {
+//                    return userMapper.userToUserResponseDto(user,user.getCredentials());
+//                })
+//                .toList();
+//    }
 }
