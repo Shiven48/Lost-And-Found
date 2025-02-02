@@ -13,15 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UserMapper {
-
-    private final CredentialService credentialService;
-    private final CredentialsRepository credentialsRepository;
-
-    @Autowired
-    public UserMapper(CredentialService credentialService, CredentialsRepository credentialsRepository) {
-        this.credentialService = credentialService;
-        this.credentialsRepository = credentialsRepository;
-    }
+    public UserMapper() {}
 
     public UserResponseDto userToUserResponseDto(UserType user, Credentials credential) {
         return new UserResponseDto(
@@ -31,7 +23,7 @@ public class UserMapper {
         );
     }
 
-    public User userRequestDtoToUser(User user, Credentials credential, UserRequestDto userRequestDto) {
+    public User userRequestDtoToUser(User user, Credentials credential, @Valid UserRequestDto userRequestDto) {
         user.setLoggedIn(userRequestDto.isLoggedIn());
         user.setLost_found(Lost_Found.LOST);
         user.setCredentials(credential);
@@ -56,23 +48,7 @@ public class UserMapper {
         );
     }
 
-    public UserRequestDto UserToUserRequestDto(User user) {
-       return null;
-    }
-
-    public UserDto toUserDto(User user){
-        return null;
-    }
-
-    public UserLostItemsDto toUserLostItemsDto(User user){
-        return null;
-    }
-
-    public UserFoundItemsDto toUserFoundItemsDto(User user) {
-        return null;
-    }
-
-    public User UserDtoToUser(User oldUser, UserDto dto) {
+    public User UserDtoToUser(User oldUser,@Valid UserDto dto) {
         oldUser.setLost_found(dto.lost_found());
         oldUser.setLoggedIn(dto.isLoggedIn());
         return oldUser;

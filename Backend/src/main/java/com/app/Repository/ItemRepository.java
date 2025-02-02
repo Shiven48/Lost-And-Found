@@ -1,15 +1,12 @@
 package com.app.Repository;
 
-import com.app.Entity.Item;
-import com.app.Entity.Lost_Found;
-import jakarta.persistence.NamedNativeQueries;
-import org.springframework.data.jpa.repository.EntityGraph;
+import com.app.Models.Entities.Item;
+import com.app.Models.Enums.Lost_Found;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.lang.annotation.Native;
 import java.util.List;
 import java.util.Optional;
 
