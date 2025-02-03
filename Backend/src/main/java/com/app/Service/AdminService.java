@@ -40,9 +40,9 @@ public class AdminService {
         return userService.userAll(pages,pageSize);
     }
 
-    public List<User> userFoundAll(){
-        return userService.userAll();
-    }
+//    public List<User> userFoundAll(){
+//        return userService.userAll();
+//    }
 
     public List<AdminResponseDto> fetchAllAdmins() {
         return adminRepository.findAll()
