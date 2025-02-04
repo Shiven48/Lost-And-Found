@@ -6,6 +6,7 @@ import com.app.Models.DTO.User.UserResponseDto;
 import com.app.Models.Entities.User;
 import com.app.Service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,32 +39,25 @@ public class AdminController {
         return ResponseEntity.ok(users);
     }
 
-    // For testing purpose
-    @GetMapping(path = "/users/full")
-    public ResponseEntity<List<User>> fetchAll() {
-        List<User> users = adminService.userFoundAll();
-        return ResponseEntity.ok(users);
-    }
-
     // Endpoint to delete any user by id
     @DeleteMapping(path = "users/{id}")
-    public ResponseEntity<UserResponseDto> deleteUserFound(@PathVariable("id") Long id) {
+    public ResponseEntity<?> deleteUserFound(@PathVariable("id") Long id) {
         try {
             UserResponseDto deletedUser = adminService.deleteUser(id);
-            return ResponseEntity.ok(deletedUser);
+            return ResponseEntity.status(HttpStatus.OK).body(deletedUser);
         } catch (Exception e) {
-            throw new RuntimeException("Unable to delete user by id : "+id, e);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Failed to delete item by id : "+id);
         }
     }
 
     // Endpoint to delete any item by id
     @DeleteMapping(path = "items/{id}")
-    public ResponseEntity<ItemDeleteResponseDto> deleteItem(@PathVariable("id") Long id){
+    public ResponseEntity<?> deleteItem(@PathVariable("id") Long id){
         try{
             ItemDeleteResponseDto deletedItem = adminService.deleteItem(id);
-            return ResponseEntity.ok(deletedItem);
+            return ResponseEntity.status(HttpStatus.OK).body(deletedItem);
         } catch(Exception e){
-            throw new RuntimeException("Failed to delete item by id : "+id, e);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Failed to delete item by id : "+id);
         }
     }
 }
