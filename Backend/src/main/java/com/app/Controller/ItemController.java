@@ -5,6 +5,7 @@ import com.app.Service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -62,17 +63,27 @@ public class ItemController {
 
     // Endpoint to update an object (e.g., change its details or type).
     @PutMapping(name = "updateItem", path = "{id}")
-    public ResponseEntity<ItemResponseDto> updateItem(@RequestBody ItemRequestDto itemDto, @PathVariable("id") Long id) {
-        ItemResponseDto itemDetailsDto = itemService.updateItem(itemDto, id);
-        return ResponseEntity.ok(itemDetailsDto);
+    public ResponseEntity<?> updateItem(@RequestBody ItemRequestDto itemDto, @PathVariable("id") Long id) {
+        try{
+            ItemResponseDto itemDetailsDto = itemService.updateItem(itemDto, id);
+            return ResponseEntity.status(HttpStatus.OK).body(itemDetailsDto);
+        } catch(Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Failed to update the item with id :"+id);
+        }
     }
 
 
     // Endpoint to delete an object by its ID.
     @DeleteMapping(name = "deleteItem", path = "{id}")
-    public ResponseEntity<ItemDeleteResponseDto> deleteItem(@PathVariable("id") Long id) {
-        ItemDeleteResponseDto deleted_Item = itemService.deleteItem(id);
-        return ResponseEntity.ok(deleted_Item);
+    public ResponseEntity<?> deleteItem(@PathVariable("id") Long id) {
+        try{
+            ItemDeleteResponseDto deleted_Item = itemService.deleteItem(id);
+            return ResponseEntity.status(HttpStatus.OK).body(deleted_Item);
+        } catch(Exception e){
+            return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                    .body("Failed to delete item with id :"+id);
+        }
     }
 
     // Endpoint to get Item based on the Category
@@ -88,7 +99,7 @@ public class ItemController {
             @RequestBody SearchParamDto searchParamDto){
 
         List<T> items = itemService.searchByNameAndCategory(searchParamDto);
-        return ResponseEntity.ok(items);
+        return ResponseEntity.status(HttpStatus.CREATED).body(items);
     }
 
     // Pagination and Sorting

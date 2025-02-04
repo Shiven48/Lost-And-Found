@@ -2,6 +2,7 @@ package com.app.Controller;
 
 import com.app.Models.DTO.Item.AddedResponseDto;
 import com.app.Models.DTO.User.*;
+import com.app.Models.Entities.User;
 import com.app.Service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,11 +22,18 @@ public class UserController {
 		this.userService = userService;
 	}
 
+	// For testing purpose
+	@GetMapping(path = "/full")
+	public ResponseEntity<List<User>> fetchAll() {
+		List<User> users = userService.userAll();
+		return ResponseEntity.status(HttpStatus.OK).body(users);
+	}
+
 	// Endpoint to get user by ID
 	@GetMapping(path="/{id}",name = "userById")
 	public ResponseEntity<UserResponseDto> fetchById(@PathVariable("id") Long userId) {
 		UserResponseDto user = userService.userById(userId);
-		return ResponseEntity.ok(user);
+		return ResponseEntity.status(HttpStatus.OK).body(user);
 	}
 
 	// Endpoint to create a new user
@@ -37,30 +45,38 @@ public class UserController {
 
 	// Endpoint to update user details.
 	@PutMapping(name="updateUser",path = "/{id}")
-	public ResponseEntity<UserResponseDto> updateUser(@PathVariable("id") Long id, @RequestBody UserDto requestedUser){
-		UserResponseDto resp_user = userService.updateUsers(id,requestedUser);
-		return ResponseEntity.ok(resp_user);
+	public ResponseEntity<?> updateUser(@PathVariable("id") Long id, @RequestBody UserDto requestedUser){
+		try{
+			UserResponseDto updateUser = userService.updateUsers(id,requestedUser);
+			return ResponseEntity.status(HttpStatus.OK).body(updateUser);
+		} catch(Exception e){
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Failed to update user with id :"+id);
+		}
 	}
 
 	// Endpoint to add found Item for the given user
 	@PutMapping(path = "/{userId}/founditem/{itemId}")
-	public ResponseEntity<AddedResponseDto> foundItem(@PathVariable("userId") Long userId,
+	public ResponseEntity<?> foundItem(@PathVariable("userId") Long userId,
 													  @PathVariable("itemId") Long itemId) {
 		try{
-			return ResponseEntity.ok(userService.addFoundItem(userId,itemId));
+			return ResponseEntity.status(HttpStatus.OK)
+					.body(userService.addFoundItem(userId,itemId));
 		} catch(Exception e){
-			throw new RuntimeException("Failed to add lost item for user with Id : "+userId, e);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body("Failed to add lost item for user with Id : "+userId);
 		}
 	}
 
 	// Endpoint to add lost Item for the given user.
 	@PutMapping(path = "/{userId}/lostitem/{itemId}")
-	public ResponseEntity<AddedResponseDto> lostItem(@PathVariable("userId") Long userId,
+	public ResponseEntity<?> lostItem(@PathVariable("userId") Long userId,
 													 @PathVariable("itemId") Long itemId) {
 		try{
-			return ResponseEntity.ok(userService.addLostItem(userId,itemId));
+			return ResponseEntity.status(HttpStatus.OK)
+					.body(userService.addLostItem(userId,itemId));
 		} catch(Exception e){
-			throw new RuntimeException("Failed to add lost item for user with Id : "+userId, e);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body("Failed to add lost item for user with Id : "+userId);
 		}
 	}
 

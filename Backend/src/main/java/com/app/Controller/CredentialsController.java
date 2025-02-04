@@ -7,8 +7,6 @@ import com.app.Models.DTO.Credentials.CredentialsResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import com.app.Models.Entities.Credentials;
 import com.app.Service.CredentialService;
 
 @RequestMapping("/api/credentials")
@@ -21,11 +19,10 @@ public class CredentialsController {
 		this.credentialService = credentialService;
 	}
 
-	// log in (No security added yet)
 	@GetMapping(path="/{id}",name = "GetCredentials")
 	public ResponseEntity<CredentialsResponseDto> GetCredentialsById(@PathVariable("id") Long id) {
 		CredentialsResponseDto credentialDto = credentialService.getCredentialsById(id);
-		return ResponseEntity.status(HttpStatus.OK).body(credentialDto);
+        return ResponseEntity.status(HttpStatus.OK).body(credentialDto);
 	}
 
 	// get all credentials
