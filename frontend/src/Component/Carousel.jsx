@@ -1,54 +1,110 @@
 import React, { useState, useEffect } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import axios from "axios"
 
 const Carousel = () => {
-
-    // Pagination and sorting api using latest date
-    const data = [
-        { id: 1, name: "keto" },
-        { id: 2, name: "Aeto" },
-        { id: 3, name: "Peto" },
-        { id: 4, name: "Teto" },
-        { id: 5, name: "Geto" }
-    ];
-
     const [currentIndex, setCurrentIndex] = useState(0);
-    const autoSlideInterval = 2000; // 2 seconds
+    const [items, setItems] = useState([])
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState(false)
+
+    const fetchItems = async () => {
+        try {
+            setLoading(true)
+            const response = await axios.get("http://localhost:8080/api/items/lost")
+            setItems(response.data.content)
+            console.log(response)
+            setLoading(false)
+        } catch (error) {
+            console.error('Error fetching items:', error);
+            setError(true)
+            setLoading(false)
+        }
+    }
 
     useEffect(() => {
-        const interval = setInterval(() => {
-            setCurrentIndex((prevIndex) => (prevIndex + 1) % data.length);
-        }, autoSlideInterval);
+        fetchItems()
+    }, [items])
 
-        return () => clearInterval(interval); // Cleanup on unmount
-    }, [data.length]);
+    useEffect(() => {
+        if (items && items.length > 0) {
+            const interval = setInterval(() => {
+                setCurrentIndex((prevIndex) => (prevIndex + 1) % items.length);
+            }, 2000)
+            return () => clearInterval(interval)
+        }
+    }, [items])
+
+    const getPrevIndex = (index) => (index - 1 + items.length) % items.length;
+    const getNextIndex = (index) => (index + 1) % items.length;
+
+    const handlePrev = () => {
+        setCurrentIndex(getPrevIndex(currentIndex));
+    };
+
+    const handleNext = () => {
+        setCurrentIndex(getNextIndex(currentIndex));
+    };
+
+    if (loading) return <div>Loading...</div>
+    if (error) return <div>Error loading items</div>
+
+    console.log(items)
 
     return (
-        <div className="w-[90%] h-[80%] flex justify-center items-center">
-            {
-                (data?.length) ? 
-                    <div className="flex overflow-hidden">
-                        {data.map((item, index) => {
-                            const isCurrent = index === currentIndex;
-                            const isPrev = index === (currentIndex - 1 + data.length) % data.length;
-                            const isNext = index === (currentIndex + 1) % data.length;
-
-                            return (
-                                <div 
-                                    className={`m-4 rounded-2xl bg-[#858795] shadow-sm shadow-white 
-                                    opacity-85 bg-opacity-30 backdrop-blur-md border-2 border-opacity-80 border-[#abb450]
-                                    ${isCurrent ? 'w-[40%] h-[90%]' : 'w-[30%] h-[80%]'} 
-                                    transition-all duration-300 ${isCurrent || isPrev || isNext ? 'block' : 'hidden'}`} 
-                                    key={item.id}
-                                >
-                                    <span> {item.name} </span>
-                                </div>
-                            );
-                        })}
+        <div className="relative flex items-center justify-center w-full h-full">
+            {items ? items.map((item, index) => (
+                    <div
+                        key={item.id}
+                        className={`
+                        absolute m-4 rounded-2xl bg-[#858795] 
+                        shadow-sm shadow-white opacity-85 
+                        bg-opacity-30 backdrop-blur-md 
+                        border-2 border-opacity-80 border-[#abb450]
+                        transition-all duration-300
+                        ${index === currentIndex ? 'w-[40%] h-[90%] z-20' :
+                            index === getPrevIndex(currentIndex) ? 'w-[30%] h-[80%] left-0 z-10' :
+                                index === getNextIndex(currentIndex) ? 'w-[30%] h-[80%] right-0 z-10' : 'hidden'}
+                    `}
+                    >
+                        <div className="flex flex-col h-full p-4">
+                            {item.image && (
+                                <img
+                                    src={item.obj_Image}
+                                    alt={item.name}
+                                    className="w-full h-48 object-cover rounded-t-xl"
+                                />
+                            )}
+                            <div className="flex-grow p-4">
+                                <h2 className="text-xl font-bold mb-2">{item.name}</h2>
+                                {item.description && (
+                                    <p className="text-sm text-gray-600 mb-2">{item.description}</p>
+                                )}
+                                {item.price && (
+                                    <div className="font-semibold text-lg">
+                                        ${item.price.toFixed(2)}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
                     </div>
-                : null
-            }
+                ))
+                : null}
+
+            <button
+                onClick={handlePrev}
+                className="absolute left-0 z-30 p-2 bg-white/50 rounded-full shadow-md"
+            >
+                <ChevronLeft />
+            </button>
+            <button
+                onClick={handleNext}
+                className="absolute right-0 z-30 p-2 bg-white/50 rounded-full shadow-md"
+            >
+                <ChevronRight />
+            </button>
         </div>
     );
-}
+};
 
 export default Carousel;
