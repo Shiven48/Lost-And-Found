@@ -53,7 +53,7 @@ const Carousel = () => {
     console.log(items.image)
 
     return (
-        <div className="relative flex items-center justify-center w-full h-full">
+        <div className="relative flex items-center justify-center w-full h-full overflow-hidden">
             {items ? items.map((item, index) => (
                     <div
                         key={item.id}
@@ -64,8 +64,8 @@ const Carousel = () => {
                         border-2 border-opacity-80 border-[#abb450]
                         transition-all duration-300
                         ${index === currentIndex ? 'w-[40%] h-[90%] z-20' :
-                            index === getPrevIndex(currentIndex) ? 'w-[30%] h-[80%] left-0 z-10' :
-                                index === getNextIndex(currentIndex) ? 'w-[30%] h-[80%] right-0 z-10' : 'hidden'}
+                            index === getPrevIndex(currentIndex) ? 'w-[30%] h-[70%] left-0 z-10 bg-opacity-10 bg-blend-darken' :
+                                index === getNextIndex(currentIndex) ? 'w-[30%] h-[70%] right-0 z-10 bg-opacity-10' : 'hidden'}
                     `}
                     >
                         <div className="flex flex-col h-full p-4">
@@ -77,7 +77,6 @@ const Carousel = () => {
                                 />
                              )}
                             <div className="flex-grow p-4">
-                            <span>This is image</span>
                                 <h2 className="text-xl font-bold mb-2">{item.name}</h2>
                                 {item.description && (
                                     <p className="text-sm text-gray-600 mb-2">{item.description}</p>
