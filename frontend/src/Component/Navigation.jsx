@@ -1,18 +1,11 @@
 import { NavLink } from "react-router-dom"
-import LFLogo from "../assets/svg/LFLogo.svg"
+import Logo from "./Logo.jsx"
 
 const Navigation = () => {
     return (
         <div className="items-center flex justify-between relative">
-            <div className="flex items-center w-10 h-10 absolute bg-white rounded-3xl justify-center m-2 mt-6 border border-white">
-                <a href="/">
-                    <img 
-                        src={LFLogo} 
-                        alt="Lost_Found_Logo"
-                        className="w-10 h-10" 
-                />
-                </a>
-            </div>
+            {/* L&F Logo */}
+            <Logo />
         <nav className="text-white w-[30%] flex rounded-3xl mt-2 border border-white pl-2 bg-gray-900 ml-auto mr-16">
             <NavLink
                 to="/"
@@ -36,7 +29,7 @@ const Navigation = () => {
             </NavLink>
         </nav>
         <nav className="text-white w-[30%] flex rounded-3xl mt-2 ml-2 justify-end">
-            <NavLink
+            {/* <NavLink
                 to="/login"
                 className={({ isActive }) =>
                     // isActive
@@ -45,7 +38,7 @@ const Navigation = () => {
                 }
             >
                 Login
-            </NavLink>
+            </NavLink> */}
             <NavLink
                 to="/signup"
                 className={({ isActive }) =>
@@ -54,7 +47,7 @@ const Navigation = () => {
                         // : "w-16 bg-[#0e1a36] text-base rounded-xl text-center m-1 border border-[#abb466] font-semibold hover:text-[#abb466]"
                 }
             >
-                Signup
+                Sign In
             </NavLink>
         </nav>
         </div> // changed to div here

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import axios from "axios"
+import img from "../assets/images/buds.jpg"
 
 const Carousel = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -12,8 +13,8 @@ const Carousel = () => {
         try {
             setLoading(true)
             const response = await axios.get("http://localhost:8080/api/items/lost")
-            setItems(response.data.content)
-            console.log(response)
+            setItems(response.data)
+            console.log(response.data)
             setLoading(false)
         } catch (error) {
             console.error('Error fetching items:', error);
@@ -24,7 +25,7 @@ const Carousel = () => {
 
     useEffect(() => {
         fetchItems()
-    }, [items])
+    }, [])
 
     useEffect(() => {
         if (items && items.length > 0) {
@@ -49,10 +50,10 @@ const Carousel = () => {
     if (loading) return <div>Loading...</div>
     if (error) return <div>Error loading items</div>
 
-    console.log(items)
+    console.log(items.image)
 
     return (
-        <div className="relative flex items-center justify-center w-full h-full">
+        <div className="relative flex items-center justify-center w-full h-full overflow-hidden">
             {items ? items.map((item, index) => (
                     <div
                         key={item.id}
@@ -63,18 +64,18 @@ const Carousel = () => {
                         border-2 border-opacity-80 border-[#abb450]
                         transition-all duration-300
                         ${index === currentIndex ? 'w-[40%] h-[90%] z-20' :
-                            index === getPrevIndex(currentIndex) ? 'w-[30%] h-[80%] left-0 z-10' :
-                                index === getNextIndex(currentIndex) ? 'w-[30%] h-[80%] right-0 z-10' : 'hidden'}
+                            index === getPrevIndex(currentIndex) ? 'w-[30%] h-[70%] left-0 z-10 bg-opacity-10 bg-blend-darken' :
+                                index === getNextIndex(currentIndex) ? 'w-[30%] h-[70%] right-0 z-10 bg-opacity-10' : 'hidden'}
                     `}
                     >
                         <div className="flex flex-col h-full p-4">
-                            {item.image && (
+                            {item.objImage && (
                                 <img
-                                    src={item.obj_Image}
+                                    src={item.objImage}
                                     alt={item.name}
                                     className="w-full h-48 object-cover rounded-t-xl"
                                 />
-                            )}
+                             )}
                             <div className="flex-grow p-4">
                                 <h2 className="text-xl font-bold mb-2">{item.name}</h2>
                                 {item.description && (
