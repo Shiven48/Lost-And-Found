@@ -1,10 +1,15 @@
 import { Outlet, useLocation } from "react-router"
 import Navigation from "../Component/Navigation"
 import Carousel from "../Component/Carousel";
+import Signup from "../Component/Signup";
 
 const Home = () => {
     const location = useLocation();
     const isHomePath = location.pathname === "/";
+    const ignorePaths = {
+        loginPage: "/login",
+        signupPage: "/signup"
+    }
 
     return(
         <main className="min-h-screen bg-[#071740] bg-blend-darken justify-between items-center text-[#abb466] text-center bg-gradient-to-bl from-[#000000]
@@ -12,7 +17,11 @@ const Home = () => {
             // style={{backgroundImage:`url(./src/assets/images/bg4.png)`}}
         >
         <div className=" w-screen h-screen">
-            <Navigation />
+            {
+                location.pathname !== ignorePaths.loginPage && location.pathname !== ignorePaths.signupPage ?
+                <Navigation /> :
+                null
+            }
             <Outlet />
             {
                isHomePath ? 
