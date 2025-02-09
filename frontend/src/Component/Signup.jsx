@@ -1,17 +1,21 @@
 import { useState } from "react";
 import { NavLink } from "react-router";
 import Logo from "./Logo";
-import Home from "../Pages/Home";
-
+import em from "../assets/svg/email.png"
 const Signup = () => {
 
     const [email,setEmail] = useState("")
+    const [password,setPassword] = useState("")
 
     const handleSubmit = () => {    
     }
 
     const handleEmailChange = (e) => {
         setEmail(e.target.value)
+    }
+
+    const handlePasswordChange = (e) => {
+        setPassword(e.target.value)
     }
     
     return(
@@ -40,14 +44,14 @@ const Signup = () => {
             "
         >
             <form onSubmit={handleSubmit}
-            
-            className="w-[90%] h-[90%] mt-2 rounded">
+            className="w-[90%] h-[90%] mt-2 rounded flex flex-col">
             <p
             className="text-left mt-10 font-bold text-white font-sans"
             >Log In to Lost & Found</p>
                 <p
                 className="text-left mt-10 font-medium text-gray-400 font-sans"
                 >Email</p>
+                <div className="flex relative">
                 <input 
                     type="email" 
                     placeholder="Enter Email" 
@@ -56,14 +60,22 @@ const Signup = () => {
                     required 
                     className="w-full bg-inherit border border-white rounded-md mt-1 pl-5 py-1 text-white placeholder:text-white"
                 />
+                <img 
+                    src={em} 
+                    height={80} 
+                    width={50} 
+                    alt="email svg"
+                    className="absolute right-1 pt-1 top-1/2 transform -translate-y-1/2"    
+                />
+                </div>
                 <p
                 className="text-left mt-5 font-medium text-gray-400 font-sans"
                 >Password</p>
                 <input 
                     type="password" 
                     placeholder="Enter Password" 
-                    value={email}
-                    onChange={(e) => handleEmailChange(e)}
+                    value={password}
+                    onChange={(e) => handlePasswordChange(e)}
                     required 
                     className="w-full bg-inherit border border-white text-white rounded-md mt-1 pl-5 py-1 placeholder:text-white"
                 />
@@ -71,11 +83,16 @@ const Signup = () => {
                     type="submit"
                     className="w-full border-black text-gray-900 font-medium font-sans rounded-md mt-12 py-1 bg-[#abb435] hover:bg-[#abb450] cursor-pointer"
                 />
+                <p
+                    className="font-medium text-gray-400 mt-16"
+                >
+                    Already have an Account?
+                </p>
                 <NavLink
                     to="/login"
-                    className=""
+                    className="w-full bg-gray-600 border border-[#abb450] rounded-md mt-1 py-1 text-black"
                 >
-                    Login
+                    Log In 
                 </NavLink>
             </form>
         </div>
